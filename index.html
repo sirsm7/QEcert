@@ -10,70 +10,62 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* --- GAYA BARU (DIKEMAS KINI) --- */
-
         /* Paparan Sijil (Mesra Mudah Alih) */
         #sijil-wrapper {
-            /* Paparan di skrin akan sentiasa muat (responsif) */
             width: 100%;
-            max-width: 210mm; /* Saiz A4 sebenar adalah had maksimum */
-            aspect-ratio: 210 / 297; /* Kekalkan nisbah aspek A4 (lebar / tinggi) */
-            height: auto; /* Ketinggian automatik berdasarkan nisbah */
-
+            max-width: 210mm;
+            aspect-ratio: 210 / 297;
+            height: auto; 
             position: relative;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             margin: 20px auto;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            /* URL Sijil dari permintaan anda */
             background-image: url('https://i.postimg.cc/jqwgDrG4/BG-Sijil.png');
         }
 
-        /* Kelas untuk meletakkan teks pada sijil */
         .sijil-text {
             position: absolute;
             width: 100%;
             text-align: center;
             font-family: 'Times New Roman', Times, serif;
             color: black;
-            padding: 0 10%; /* Elak teks terlalu rapat ke tepi */
-            box-sizing: border-box; /* Pastikan padding diambil kira */
+            padding: 0 10%;
+            box-sizing: border-box;
         }
 
         /* --- BLOK CETAKAN YANG DIBAIKI --- */
         @media print {
-            /* Sembunyikan semua elemen UI */
+            /* === ARAHAN BARU: Set margin cetak ke SIFAR === */
+            @page {
+                size: A4 portrait; /* Pastikan saiz A4 */
+                margin: 0;       /* Tiada margin */
+            }
+
             body * {
                 visibility: hidden;
             }
             #print-button {
                 display: none;
             }
-
-            /* Tunjukkan hanya sijil */
             #sijil-wrapper, #sijil-wrapper * {
                 visibility: visible;
             }
-
-            /* Tetapkan sijil ke saiz A4 penuh untuk cetakan */
             #sijil-wrapper {
                 position: absolute;
                 left: 0;
                 top: 0;
-                width: 210mm; /* Kembalikan ke saiz A4 sebenar */
-                height: 297mm; /* Kembalikan ke saiz A4 sebenar */
-                max-width: none; /* Buang had max-width */
-                aspect-ratio: auto; /* Buang nisbah aspek */
+                width: 210mm;
+                height: 297mm;
+                max-width: none;
+                aspect-ratio: auto;
                 margin: 0;
                 padding: 0;
                 box-shadow: none;
                 border: none;
-                
-                /* === ARAHAN KRITIKAL (FIX) === */
-                /* Paksa pelayar untuk cetak latar belakang */
-                -webkit-print-color-adjust: exact; /* Untuk Chrome, Safari, Edge */
-                print-color-adjust: exact;         /* Standard CSS */
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
     </style>
@@ -212,20 +204,15 @@
 
     <script type="module">
         // --- 3. KONFIGURASI SUPABASE ---
-        // Guna URL dan Kunci Anon yang anda berikan
         const SUPABASE_URL = 'https://qixtrxechyvxjdxthfrb.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpeHRyeGVjaHl2eGpkeHRoZnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njg1NDcsImV4cCI6MjA3NzM0NDU0N30.emTaRn3JyI5hivpKxUL9kqmiV1TAJmH3oAohgBT-2eI';
-        
-        // Cipta klien Supabase
         const { createClient } = supabase;
         const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // --- KONFIGURASI SIJIL ---
-        // Anda boleh ubah nilai 'top' (jarak dari atas) untuk selaraskan kedudukan teks pada sijil anda
-        // Nilai dalam peratusan (%) dari ketinggian sijil
-        const POSISI_NAMA = '46%'; // Anggaran
-        const POSISI_NOKP = '51%'; // Anggaran
-        const POSISI_PERANAN = '58%'; // Anggaran
+        const POSISI_NAMA = '46%';
+        const POSISI_NOKP = '51%';
+        const POSISI_PERANAN = '58%';
 
         // --- ELEMEN DOM ---
         const tabButtons = {
@@ -265,44 +252,25 @@
         ];
         const senaraiPeranan = ['MURID / PELAJAR', 'GURU', 'PEGAWAI DI JPN', 'PEGAWAI DI PPD', 'IBU BAPA'];
 
-
         // --- FUNGSI UTAMA ---
-
-        // Fungsi untuk tukar tab
         function showTab(tabId) {
-            // Sembunyikan semua kandungan
             Object.values(tabContents).forEach(content => content.classList.add('hidden'));
-            // Nyah-aktif semua butang
             Object.values(tabButtons).forEach(btn => btn.classList.remove('bg-blue-600', 'text-white'));
-            
-            // Tunjukkan kandungan yang dipilih
             tabContents[`content${tabId}`].classList.remove('hidden');
-            // Aktifkan butang yang dipilih
             tabButtons[`btn${tabId}`].classList.add('bg-blue-600', 'text-white');
-
-            // Jika klik Tab 3, muat semula rumusan
-            if (tabId === '3') {
-                loadRumusan();
-            }
-            // Kosongkan mesej
+            if (tabId === '3') loadRumusan();
             hideMessage();
         }
-
-        // Fungsi untuk papar mesej
         function showMessage(message, type = 'success') {
             msgContainer.innerHTML = message;
             msgContainer.className = `p-4 rounded-md ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`;
             msgContainer.classList.remove('hidden');
         }
-
-        // Fungsi untuk sembunyi mesej
         function hideMessage() {
             msgContainer.classList.add('hidden');
         }
 
         // --- LOGIK TAB 1: PENDAFTARAN ---
-
-        // Tunjuk/Sembunyi dropdown daerah bila negeri berubah
         negeriSelect.addEventListener('change', () => {
             if (negeriSelect.value === 'MELAKA') {
                 daerahContainer.classList.remove('hidden');
@@ -310,11 +278,9 @@
             } else {
                 daerahContainer.classList.add('hidden');
                 daerahSelect.required = false;
-                daerahSelect.value = ''; // Reset pilihan daerah
+                daerahSelect.value = '';
             }
         });
-
-        // Tunjuk/Sembunyi helper text untuk sekolah
         perananSelect.addEventListener('change', () => {
             if (perananWajibSekolah.includes(perananSelect.value)) {
                 sekolahInput.required = true;
@@ -325,9 +291,9 @@
             }
         });
 
-        // Hantar borang pendaftaran
+        // --- LOGIK PENDAFTARAN (UPSERT) YANG BARU ---
         formPendaftaran.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Halang borang dari reload
+            e.preventDefault();
             hideMessage();
             submitBtn.disabled = true;
             submitBtn.textContent = 'Menghantar...';
@@ -342,7 +308,7 @@
                 sekolah: formData.get('sekolah') || null,
             };
 
-            // Validasi tambahan untuk sekolah (walaupun 'required' ditambah, ini lapisan kedua)
+            // Validasi tambahan
             if (perananWajibSekolah.includes(dataObj.peranan) && !dataObj.sekolah) {
                 showMessage('Nama Sekolah / Jabatan wajib diisi untuk peranan anda.', 'error');
                 submitBtn.disabled = false;
@@ -351,57 +317,83 @@
             }
 
             try {
-                // Hantar data ke Supabase
-                const { data, error } = await db.from('peserta').insert([dataObj]).select();
-                
-                if (error) {
-                    if (error.code === '23505') { // Kod untuk 'unique violation' (cth: No KP dah wujud)
-                        throw new Error('No. Kad Pengenalan ini telah didaftarkan.');
-                    }
-                    throw error; // Lontar ralat lain
+                // STRATEGI 2: UPSERT
+                // 1. Semak jika No. KP sudah wujud
+                const { data: existingUser, error: selectError } = await db
+                    .from('peserta')
+                    .select('id') // Hanya perlukan 'id' untuk pengesahan
+                    .eq('nokp', dataObj.nokp)
+                    .maybeSingle(); // Guna maybeSingle() - pulangkan null jika tiada, bukan ralat
+
+                if (selectError) {
+                    throw new Error(`Ralat semasa menyemak data: ${selectError.message}`);
                 }
 
-                showMessage('Pendaftaran berjaya! Sila ke Tab "Semak Sijil" untuk muat turun sijil anda.', 'success');
-                formPendaftaran.reset(); // Kosongkan borang
-                daerahContainer.classList.add('hidden'); // Sembunyi semula dropdown daerah
-            
+                if (existingUser) {
+                    // 2. JIKA WUJUD: Kemas kini (UPDATE) data sedia ada
+                    const { error: updateError } = await db
+                        .from('peserta')
+                        .update(dataObj) // Hantar semua data baru
+                        .eq('nokp', dataObj.nokp); // Berdasarkan No. KP
+                    
+                    if (updateError) {
+                        throw new Error(`Ralat semasa kemas kini: ${updateError.message}`);
+                    }
+                    
+                    showMessage('Maklumat anda telah berjaya dikemas kini!', 'success');
+                
+                } else {
+                    // 3. JIKA TIADA: Masukkan (INSERT) data baru
+                    const { error: insertError } = await db
+                        .from('peserta')
+                        .insert([dataObj]);
+                    
+                    if (insertError) {
+                        // Ralat 'unique' tidak sepatutnya berlaku, tapi sebagai langkah keselamatan
+                        if (insertError.code === '23505') {
+                            throw new Error('No. Kad Pengenalan ini telah didaftarkan (konflik).');
+                        }
+                        throw new Error(`Ralat semasa mendaftar: ${insertError.message}`);
+                    }
+                    
+                    showMessage('Pendaftaran berjaya! Sila ke Tab "Semak Sijil".', 'success');
+                }
+                
+                // Reset borang selepas berjaya (sama ada insert atau update)
+                formPendaftaran.reset();
+                daerahContainer.classList.add('hidden');
+
             } catch (error) {
                 console.error('Ralat Pendaftaran:', error.message);
-                showMessage(`Pendaftaran Gagal: ${error.message}`, 'error');
+                showMessage(`Proses Gagal: ${error.message}`, 'error');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Hantar Pendaftaran';
             }
         });
 
-
         // --- LOGIK TAB 2: SEMAKAN SIJIL ---
-
         formSemakan.addEventListener('submit', async (e) => {
             e.preventDefault();
             hideMessage();
-            sijilContainer.innerHTML = ''; // Kosongkan kontena sijil
+            sijilContainer.innerHTML = '';
             searchBtn.disabled = true;
             searchBtn.textContent = 'Mencari...';
 
             const nokp = nokpSemakInput.value;
 
             try {
-                // Cari data peserta berdasarkan No KP
                 const { data, error } = await db
                     .from('peserta')
                     .select('*')
                     .eq('nokp', nokp)
-                    .single(); // Ambil satu rekod sahaja
+                    .single(); 
 
                 if (error || !data) {
                     throw new Error('Data tidak ditemui. Sila pastikan No. KP anda betul atau daftar di Tab 1.');
                 }
-
-                // Jika data ditemui, jana sijil
                 generateCertificate(data);
                 showMessage('Sijil ditemui. Sila skrol ke bawah untuk melihat.', 'success');
-
             } catch (error) {
                 console.error('Ralat Semakan:', error.message);
                 showMessage(`Semakan Gagal: ${error.message}`, 'error');
@@ -411,9 +403,7 @@
             }
         });
 
-        // Fungsi untuk jana HTML sijil
         function generateCertificate(peserta) {
-            // Suntik HTML sijil ke dalam kontena
             sijilContainer.innerHTML = `
                 <div class="flex justify-center mb-4">
                     <button id="print-button" class="py-2 px-6 bg-green-600 text-white font-bold rounded-md shadow-md hover:bg-green-700 transition duration-150">
@@ -421,7 +411,6 @@
                     </button>
                 </div>
                 <div id="sijil-wrapper">
-                    <!-- Data Peserta diletakkan secara 'absolute' -->
                     <div class="sijil-text" style="top: ${POSISI_NAMA}; font-size: 1.8rem; font-weight: bold;">
                         ${peserta.nama}
                     </div>
@@ -433,28 +422,19 @@
                     </div>
                 </div>
             `;
-
-            // Tambah event listener pada butang cetak
             document.getElementById('print-button').addEventListener('click', () => {
                 window.print();
             });
         }
 
-
         // --- LOGIK TAB 3: RUMUSAN ---
-        
         async function loadRumusan() {
             rumusanContainer.innerHTML = '<p class="text-gray-500">Memuatkan data rumusan...</p>';
-            
             try {
-                // Ambil semua data negeri dan peranan
                 const { data, error } = await db
                     .from('peserta')
                     .select('negeri, peranan');
-
                 if (error) throw error;
-
-                // 1. Sediakan templat rumusan
                 const summary = {};
                 senaraiNegeri.forEach(negeri => {
                     summary[negeri] = { TOTAL: 0 };
@@ -462,10 +442,7 @@
                         summary[negeri][peranan] = 0;
                     });
                 });
-                
                 let grandTotal = 0;
-
-                // 2. Kira data
                 data.forEach(item => {
                     if (summary[item.negeri] && summary[item.negeri][item.peranan] !== undefined) {
                         summary[item.negeri][item.peranan]++;
@@ -473,33 +450,20 @@
                         grandTotal++;
                     }
                 });
-                
-                // 3. Jana HTML
-                let html = '';
-                
-                // Tambah kad Jumlah Keseluruhan
-                html += `
+                let html = `
                     <div class="col-span-1 md:col-span-2 lg:col-span-3 bg-blue-800 text-white p-4 rounded-lg shadow-lg">
                         <h3 class="text-2xl font-bold">Jumlah Keseluruhan</h3>
                         <p class="text-5xl font-extrabold">${grandTotal}</p>
                     </div>
                 `;
-
-                // Cari nilai 'max' untuk skala warna 'heatmap'
                 const maxTotal = Math.max(...Object.values(summary).map(n => n.TOTAL));
-                
-                // Jana kad untuk setiap negeri
                 senaraiNegeri.forEach(negeri => {
                     const negeriData = summary[negeri];
                     const total = negeriData.TOTAL;
-                    
-                    // Skala warna berdasarkan 'total' berbanding 'maxTotal'
-                    // Opacity dari 20% (min) hingga 100% (max)
-                    let bgOpacity = 20; // Default untuk 0
+                    let bgOpacity = 20;
                     if (maxTotal > 0 && total > 0) {
                         bgOpacity = 20 + Math.floor((total / maxTotal) * 80);
                     }
-                    
                     html += `
                         <div class="border border-gray-200 rounded-lg shadow-md overflow-hidden bg-blue-500" style="background-color: rgba(59, 130, 246, ${bgOpacity / 100});">
                             <div class="p-4 ${bgOpacity > 60 ? 'text-white' : 'text-gray-900'}">
@@ -519,24 +483,17 @@
                         </div>
                     `;
                 });
-
                 rumusanContainer.innerHTML = html;
-
             } catch (error) {
                 console.error('Ralat Memuatkan Rumusan:', error.message);
                 rumusanContainer.innerHTML = `<p class="text-red-500">Gagal memuatkan data: ${error.message}</p>`;
             }
         }
 
-
         // --- PENYEDIAAN AWAL ---
-        
-        // Tetapkan event listener untuk butang tab
         tabButtons.btn1.addEventListener('click', () => showTab('1'));
         tabButtons.btn2.addEventListener('click', () => showTab('2'));
         tabButtons.btn3.addEventListener('click', () => showTab('3'));
-
-        // Tunjukkan tab pertama semasa muat laman
         showTab('1');
     </script>
 </body>
