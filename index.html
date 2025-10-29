@@ -10,10 +10,16 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* Gaya tambahan untuk A4 dan cetakan */
+        /* --- GAYA BARU (DIKEMAS KINI) --- */
+
+        /* Paparan Sijil (Mesra Mudah Alih) */
         #sijil-wrapper {
-            width: 210mm;
-            height: 297mm;
+            /* Paparan di skrin akan sentiasa muat (responsif) */
+            width: 100%;
+            max-width: 210mm; /* Saiz A4 sebenar adalah had maksimum */
+            aspect-ratio: 210 / 297; /* Kekalkan nisbah aspek A4 (lebar / tinggi) */
+            height: auto; /* Ketinggian automatik berdasarkan nisbah */
+
             position: relative;
             background-size: cover;
             background-position: center;
@@ -35,28 +41,39 @@
             box-sizing: border-box; /* Pastikan padding diambil kira */
         }
 
-        /* CSS untuk cetakan */
+        /* --- BLOK CETAKAN YANG DIBAIKI --- */
         @media print {
+            /* Sembunyikan semua elemen UI */
             body * {
-                visibility: hidden; /* Sembunyikan semua elemen */
+                visibility: hidden;
             }
+            #print-button {
+                display: none;
+            }
+
+            /* Tunjukkan hanya sijil */
             #sijil-wrapper, #sijil-wrapper * {
-                visibility: visible; /* Tunjukkan hanya sijil */
+                visibility: visible;
             }
+
+            /* Tetapkan sijil ke saiz A4 penuh untuk cetakan */
             #sijil-wrapper {
                 position: absolute;
                 left: 0;
                 top: 0;
-                width: 100%;
-                height: 100%;
+                width: 210mm; /* Kembalikan ke saiz A4 sebenar */
+                height: 297mm; /* Kembalikan ke saiz A4 sebenar */
+                max-width: none; /* Buang had max-width */
+                aspect-ratio: auto; /* Buang nisbah aspek */
                 margin: 0;
                 padding: 0;
                 box-shadow: none;
                 border: none;
-            }
-            /* Sembunyikan butang cetak semasa mencetak */
-            #print-button {
-                display: none;
+                
+                /* === ARAHAN KRITIKAL (FIX) === */
+                /* Paksa pelayar untuk cetak latar belakang */
+                -webkit-print-color-adjust: exact; /* Untuk Chrome, Safari, Edge */
+                print-color-adjust: exact;         /* Standard CSS */
             }
         }
     </style>
@@ -524,3 +541,4 @@
     </script>
 </body>
 </html>
+
