@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem e-Sijil</title>
+    <!-- 1. Muatnaik Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 2. Muatnaik Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* Gaya tambahan untuk A4 dan cetakan */
+        #sijil-wrapper {
+            width: 210mm;
+            height: 297mm;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 20px auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            /* URL Sijil dari permintaan anda */
+            background-image: url('https://i.postimg.cc/jqwgDrG4/BG-Sijil.png');
+        }
+
+        /* Kelas untuk meletakkan teks pada sijil */
+        .sijil-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+            color: black;
+            padding: 0 10%; /* Elak teks terlalu rapat ke tepi */
+            box-sizing: border-box; /* Pastikan padding diambil kira */
+        }
+
+        /* CSS untuk cetakan */
+        @media print {
+            body * {
+                visibility: hidden; /* Sembunyikan semua elemen */
+            }
+            #sijil-wrapper, #sijil-wrapper * {
+                visibility: visible; /* Tunjukkan hanya sijil */
+            }
+            #sijil-wrapper {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                border: none;
+            }
+            /* Sembunyikan butang cetak semasa mencetak */
+            #print-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+        <header class="bg-blue-600 text-white p-6">
+            <h1 class="text-3xl font-bold text-center">Sistem Pengurusan e-Sijil</h1>
+        </header>
+
+        <!-- Navigasi Tab -->
+        <nav class="flex border-b">
+            <button id="tab-btn-1" class="tab-button flex-1 py-4 px-6 text-center font-medium text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                Daftar Kehadiran
+            </button>
+            <button id="tab-btn-2" class="tab-button flex-1 py-4 px-6 text-center font-medium text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                Semak Sijil
+            </button>
+            <button id="tab-btn-3" class="tab-button flex-1 py-4 px-6 text-center font-medium text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                Rumusan
+            </button>
+        </nav>
+
+        <!-- Kontena Mesej Global -->
+        <div id="message-container" class="p-4 hidden"></div>
+
+        <!-- Kandungan Tab -->
+        <div class="p-6 md:p-8">
+            <!-- Tab 1: Daftar Kehadiran -->
+            <div id="tab-content-1" class="tab-content">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800">Borang Pendaftaran Peserta</h2>
+                <form id="form-pendaftaran" class="space-y-6">
+                    <div>
+                        <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Penuh (HURUF BESAR)</label>
+                        <input type="text" id="nama" name="nama" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required
+                               oninput="this.value = this.value.toUpperCase()">
+                    </div>
+                    <div>
+                        <label for="nokp" class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan (12 digit, tanpa '-')</label>
+                        <input type="text" id="nokp" name="nokp" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required
+                               pattern="[0-9]{12}" maxlength="12" title="Sila masukkan 12 digit nombor KP tanpa sempang.">
+                    </div>
+                    <div>
+                        <label for="negeri" class="block text-sm font-medium text-gray-700 mb-1">Negeri</label>
+                        <select id="negeri" name="negeri" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white" required>
+                            <option value="">-- Sila Pilih Negeri --</option>
+                            <option value="PAHANG">PAHANG</option>
+                            <option value="PERAK">PERAK</option>
+                            <option value="TERENGGANU">TERENGGANU</option>
+                            <option value="PERLIS">PERLIS</option>
+                            <option value="SELANGOR">SELANGOR</option>
+                            <option value="NEGERI SEMBILAN">NEGERI SEMBILAN</option>
+                            <option value="JOHOR">JOHOR</option>
+                            <option value="KELANTAN">KELANTAN</option>
+                            <option value="KEDAH">KEDAH</option>
+                            <option value="PULAU PINANG">PULAU PINANG</option>
+                            <option value="MELAKA">MELAKA</option>
+                            <option value="SABAH">SABAH</option>
+                            <option value="SARAWAK">SARAWAK</option>
+                            <option value="WILAYAH PERSEKUTUAN KUALA LUMPUR">WILAYAH PERSEKUTUAN KUALA LUMPUR</option>
+                            <option value="WILAYAH PERSEKUTUAN LABUAN">WILAYAH PERSEKUTUAN LABUAN</option>
+                            <option value="WILAYAH PERSEKUTUAN PUTRAJAYA">WILAYAH PERSEKUTUAN PUTRAJAYA</option>
+                        </select>
+                    </div>
+                    <!-- Kontena Daerah (Hanya untuk Melaka) -->
+                    <div id="daerah-melaka-container" class="hidden space-y-1">
+                        <label for="daerah" class="block text-sm font-medium text-gray-700">Daerah (Melaka)</label>
+                        <select id="daerah" name="daerah" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white">
+                            <option value="">-- Sila Pilih Daerah --</option>
+                            <option value="ALOR GAJAH">ALOR GAJAH</option>
+                            <option value="JASIN">JASIN</option>
+                            <option value="MELAKA TENGAH">MELAKA TENGAH</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="peranan" class="block text-sm font-medium text-gray-700 mb-1">Peranan</label>
+                        <select id="peranan" name="peranan" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white" required>
+                            <option value="">-- Sila Pilih Peranan --</option>
+                            <option value="MURID / PELAJAR">MURID / PELAJAR</option>
+                            <option value="GURU">GURU</option>
+                            <option value="PEGAWAI DI JPN">PEGAWAI DI JPN</option>
+                            <option value="PEGAWAI DI PPD">PEGAWAI DI PPD</option>
+                            <option value="IBU BAPA">IBU BAPA</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="sekolah" class="block text-sm font-medium text-gray-700 mb-1">Nama Sekolah / Jabatan (HURUF BESAR)</label>
+                        <input type="text" id="sekolah" name="sekolah" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                               oninput="this.value = this.value.toUpperCase()">
+                        <p id="sekolah-helper" class="text-xs text-gray-500 mt-1">Wajib diisi jika peranan anda GURU, MURID, PEGAWAI JPN, atau PEGAWAI PPD.</p>
+                    </div>
+                    <div>
+                        <button type="submit" id="submit-btn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                            Hantar Pendaftaran
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tab 2: Semak Sijil -->
+            <div id="tab-content-2" class="tab-content hidden">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800">Semakan Sijil</h2>
+                <form id="form-semakan" class="flex flex-col sm:flex-row gap-4 mb-6">
+                    <div class="flex-grow">
+                        <label for="nokp-semak" class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan</label>
+                        <input type="text" id="nokp-semak" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Masukkan 12 digit No. KP" pattern="[0-9]{12}" maxlength="12" required>
+                    </div>
+                    <div class="self-end">
+                        <button type="submit" id="search-btn" class="w-full sm:w-auto flex justify-center py-2 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
+                            Cari
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Ruang untuk paparan sijil -->
+                <div id="sijil-container" class="mt-6">
+                    <!-- Sijil akan disuntik di sini oleh JavaScript -->
+                </div>
+            </div>
+
+            <!-- Tab 3: Rumusan -->
+            <div id="tab-content-3" class="tab-content hidden">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-800">Rumusan Kehadiran</h2>
+                <div id="rumusan-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Data rumusan akan disuntik di sini -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center text-gray-500 text-sm mt-8">
+        Dibina dengan ❤️ menggunakan HTML, Tailwind CSS dan Supabase.
+    </footer>
+
+    <script type="module">
+        // --- 3. KONFIGURASI SUPABASE ---
+        // Guna URL dan Kunci Anon yang anda berikan
+        const SUPABASE_URL = 'https://qixtrxechyvxjdxthfrb.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpeHRyeGVjaHl2eGpkeHRoZnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njg1NDcsImV4cCI6MjA3NzM0NDU0N30.emTaRn3JyI5hivpKxUL9kqmiV1TAJmH3oAohgBT-2eI';
+        
+        // Cipta klien Supabase
+        const { createClient } = supabase;
+        const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // --- KONFIGURASI SIJIL ---
+        // Anda boleh ubah nilai 'top' (jarak dari atas) untuk selaraskan kedudukan teks pada sijil anda
+        // Nilai dalam peratusan (%) dari ketinggian sijil
+        const POSISI_NAMA = '46%'; // Anggaran
+        const POSISI_NOKP = '51%'; // Anggaran
+        const POSISI_PERANAN = '58%'; // Anggaran
+
+        // --- ELEMEN DOM ---
+        const tabButtons = {
+            btn1: document.getElementById('tab-btn-1'),
+            btn2: document.getElementById('tab-btn-2'),
+            btn3: document.getElementById('tab-btn-3'),
+        };
+        const tabContents = {
+            content1: document.getElementById('tab-content-1'),
+            content2: document.getElementById('tab-content-2'),
+            content3: document.getElementById('tab-content-3'),
+        };
+        const msgContainer = document.getElementById('message-container');
+        
+        // Borang Pendaftaran (Tab 1)
+        const formPendaftaran = document.getElementById('form-pendaftaran');
+        const negeriSelect = document.getElementById('negeri');
+        const daerahContainer = document.getElementById('daerah-melaka-container');
+        const daerahSelect = document.getElementById('daerah');
+        const perananSelect = document.getElementById('peranan');
+        const sekolahInput = document.getElementById('sekolah');
+        const submitBtn = document.getElementById('submit-btn');
+
+        // Borang Semakan (Tab 2)
+        const formSemakan = document.getElementById('form-semakan');
+        const nokpSemakInput = document.getElementById('nokp-semak');
+        const sijilContainer = document.getElementById('sijil-container');
+        const searchBtn = document.getElementById('search-btn');
+        
+        // Rumusan (Tab 3)
+        const rumusanContainer = document.getElementById('rumusan-container');
+        const perananWajibSekolah = ['MURID / PELAJAR', 'GURU', 'PEGAWAI DI JPN', 'PEGAWAI DI PPD'];
+        const senaraiNegeri = [
+            'JOHOR', 'KEDAH', 'KELANTAN', 'MELAKA', 'NEGERI SEMBILAN', 'PAHANG', 'PERAK', 
+            'PERLIS', 'PULAU PINANG', 'SABAH', 'SARAWAK', 'SELANGOR', 'TERENGGANU', 
+            'WILAYAH PERSEKUTUAN KUALA LUMPUR', 'WILAYAH PERSEKUTUAN LABUAN', 'WILAYAH PERSEKUTUAN PUTRAJAYA'
+        ];
+        const senaraiPeranan = ['MURID / PELAJAR', 'GURU', 'PEGAWAI DI JPN', 'PEGAWAI DI PPD', 'IBU BAPA'];
+
+
+        // --- FUNGSI UTAMA ---
+
+        // Fungsi untuk tukar tab
+        function showTab(tabId) {
+            // Sembunyikan semua kandungan
+            Object.values(tabContents).forEach(content => content.classList.add('hidden'));
+            // Nyah-aktif semua butang
+            Object.values(tabButtons).forEach(btn => btn.classList.remove('bg-blue-600', 'text-white'));
+            
+            // Tunjukkan kandungan yang dipilih
+            tabContents[`content${tabId}`].classList.remove('hidden');
+            // Aktifkan butang yang dipilih
+            tabButtons[`btn${tabId}`].classList.add('bg-blue-600', 'text-white');
+
+            // Jika klik Tab 3, muat semula rumusan
+            if (tabId === '3') {
+                loadRumusan();
+            }
+            // Kosongkan mesej
+            hideMessage();
+        }
+
+        // Fungsi untuk papar mesej
+        function showMessage(message, type = 'success') {
+            msgContainer.innerHTML = message;
+            msgContainer.className = `p-4 rounded-md ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`;
+            msgContainer.classList.remove('hidden');
+        }
+
+        // Fungsi untuk sembunyi mesej
+        function hideMessage() {
+            msgContainer.classList.add('hidden');
+        }
+
+        // --- LOGIK TAB 1: PENDAFTARAN ---
+
+        // Tunjuk/Sembunyi dropdown daerah bila negeri berubah
+        negeriSelect.addEventListener('change', () => {
+            if (negeriSelect.value === 'MELAKA') {
+                daerahContainer.classList.remove('hidden');
+                daerahSelect.required = true;
+            } else {
+                daerahContainer.classList.add('hidden');
+                daerahSelect.required = false;
+                daerahSelect.value = ''; // Reset pilihan daerah
+            }
+        });
+
+        // Tunjuk/Sembunyi helper text untuk sekolah
+        perananSelect.addEventListener('change', () => {
+            if (perananWajibSekolah.includes(perananSelect.value)) {
+                sekolahInput.required = true;
+                document.getElementById('sekolah-helper').classList.add('text-red-500', 'font-medium');
+            } else {
+                sekolahInput.required = false;
+                document.getElementById('sekolah-helper').classList.remove('text-red-500', 'font-medium');
+            }
+        });
+
+        // Hantar borang pendaftaran
+        formPendaftaran.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Halang borang dari reload
+            hideMessage();
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Menghantar...';
+
+            const formData = new FormData(formPendaftaran);
+            const dataObj = {
+                nama: formData.get('nama'),
+                nokp: formData.get('nokp'),
+                negeri: formData.get('negeri'),
+                daerah: formData.get('negeri') === 'MELAKA' ? formData.get('daerah') : null,
+                peranan: formData.get('peranan'),
+                sekolah: formData.get('sekolah') || null,
+            };
+
+            // Validasi tambahan untuk sekolah (walaupun 'required' ditambah, ini lapisan kedua)
+            if (perananWajibSekolah.includes(dataObj.peranan) && !dataObj.sekolah) {
+                showMessage('Nama Sekolah / Jabatan wajib diisi untuk peranan anda.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Hantar Pendaftaran';
+                return;
+            }
+
+            try {
+                // Hantar data ke Supabase
+                const { data, error } = await db.from('peserta').insert([dataObj]).select();
+                
+                if (error) {
+                    if (error.code === '23505') { // Kod untuk 'unique violation' (cth: No KP dah wujud)
+                        throw new Error('No. Kad Pengenalan ini telah didaftarkan.');
+                    }
+                    throw error; // Lontar ralat lain
+                }
+
+                showMessage('Pendaftaran berjaya! Sila ke Tab "Semak Sijil" untuk muat turun sijil anda.', 'success');
+                formPendaftaran.reset(); // Kosongkan borang
+                daerahContainer.classList.add('hidden'); // Sembunyi semula dropdown daerah
+            
+            } catch (error) {
+                console.error('Ralat Pendaftaran:', error.message);
+                showMessage(`Pendaftaran Gagal: ${error.message}`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Hantar Pendaftaran';
+            }
+        });
+
+
+        // --- LOGIK TAB 2: SEMAKAN SIJIL ---
+
+        formSemakan.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideMessage();
+            sijilContainer.innerHTML = ''; // Kosongkan kontena sijil
+            searchBtn.disabled = true;
+            searchBtn.textContent = 'Mencari...';
+
+            const nokp = nokpSemakInput.value;
+
+            try {
+                // Cari data peserta berdasarkan No KP
+                const { data, error } = await db
+                    .from('peserta')
+                    .select('*')
+                    .eq('nokp', nokp)
+                    .single(); // Ambil satu rekod sahaja
+
+                if (error || !data) {
+                    throw new Error('Data tidak ditemui. Sila pastikan No. KP anda betul atau daftar di Tab 1.');
+                }
+
+                // Jika data ditemui, jana sijil
+                generateCertificate(data);
+                showMessage('Sijil ditemui. Sila skrol ke bawah untuk melihat.', 'success');
+
+            } catch (error) {
+                console.error('Ralat Semakan:', error.message);
+                showMessage(`Semakan Gagal: ${error.message}`, 'error');
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.textContent = 'Cari';
+            }
+        });
+
+        // Fungsi untuk jana HTML sijil
+        function generateCertificate(peserta) {
+            // Suntik HTML sijil ke dalam kontena
+            sijilContainer.innerHTML = `
+                <div class="flex justify-center mb-4">
+                    <button id="print-button" class="py-2 px-6 bg-green-600 text-white font-bold rounded-md shadow-md hover:bg-green-700 transition duration-150">
+                        Cetak / Simpan PDF
+                    </button>
+                </div>
+                <div id="sijil-wrapper">
+                    <!-- Data Peserta diletakkan secara 'absolute' -->
+                    <div class="sijil-text" style="top: ${POSISI_NAMA}; font-size: 1.8rem; font-weight: bold;">
+                        ${peserta.nama}
+                    </div>
+                    <div class="sijil-text" style="top: ${POSISI_NOKP}; font-size: 1.2rem;">
+                        ${peserta.nokp}
+                    </div>
+                    <div class="sijil-text" style="top: ${POSISI_PERANAN}; font-size: 1.3rem; font-weight: bold; text-transform: uppercase;">
+                        SEBAGAI ${peserta.peranan}
+                    </div>
+                </div>
+            `;
+
+            // Tambah event listener pada butang cetak
+            document.getElementById('print-button').addEventListener('click', () => {
+                window.print();
+            });
+        }
+
+
+        // --- LOGIK TAB 3: RUMUSAN ---
+        
+        async function loadRumusan() {
+            rumusanContainer.innerHTML = '<p class="text-gray-500">Memuatkan data rumusan...</p>';
+            
+            try {
+                // Ambil semua data negeri dan peranan
+                const { data, error } = await db
+                    .from('peserta')
+                    .select('negeri, peranan');
+
+                if (error) throw error;
+
+                // 1. Sediakan templat rumusan
+                const summary = {};
+                senaraiNegeri.forEach(negeri => {
+                    summary[negeri] = { TOTAL: 0 };
+                    senaraiPeranan.forEach(peranan => {
+                        summary[negeri][peranan] = 0;
+                    });
+                });
+                
+                let grandTotal = 0;
+
+                // 2. Kira data
+                data.forEach(item => {
+                    if (summary[item.negeri] && summary[item.negeri][item.peranan] !== undefined) {
+                        summary[item.negeri][item.peranan]++;
+                        summary[item.negeri]['TOTAL']++;
+                        grandTotal++;
+                    }
+                });
+                
+                // 3. Jana HTML
+                let html = '';
+                
+                // Tambah kad Jumlah Keseluruhan
+                html += `
+                    <div class="col-span-1 md:col-span-2 lg:col-span-3 bg-blue-800 text-white p-4 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-bold">Jumlah Keseluruhan</h3>
+                        <p class="text-5xl font-extrabold">${grandTotal}</p>
+                    </div>
+                `;
+
+                // Cari nilai 'max' untuk skala warna 'heatmap'
+                const maxTotal = Math.max(...Object.values(summary).map(n => n.TOTAL));
+                
+                // Jana kad untuk setiap negeri
+                senaraiNegeri.forEach(negeri => {
+                    const negeriData = summary[negeri];
+                    const total = negeriData.TOTAL;
+                    
+                    // Skala warna berdasarkan 'total' berbanding 'maxTotal'
+                    // Opacity dari 20% (min) hingga 100% (max)
+                    let bgOpacity = 20; // Default untuk 0
+                    if (maxTotal > 0 && total > 0) {
+                        bgOpacity = 20 + Math.floor((total / maxTotal) * 80);
+                    }
+                    
+                    html += `
+                        <div class="border border-gray-200 rounded-lg shadow-md overflow-hidden bg-blue-500" style="background-color: rgba(59, 130, 246, ${bgOpacity / 100});">
+                            <div class="p-4 ${bgOpacity > 60 ? 'text-white' : 'text-gray-900'}">
+                                <h4 class="text-lg font-bold">${negeri}</h4>
+                                <p class="text-3xl font-extrabold">${total}</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 border-t ${bgOpacity > 60 ? 'text-gray-700' : ''}">
+                                <ul class="text-sm space-y-1">
+                                    ${senaraiPeranan.map(peranan => `
+                                        <li class="flex justify-between">
+                                            <span>${peranan}</span>
+                                            <span classs="font-medium">${negeriData[peranan]}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                rumusanContainer.innerHTML = html;
+
+            } catch (error) {
+                console.error('Ralat Memuatkan Rumusan:', error.message);
+                rumusanContainer.innerHTML = `<p class="text-red-500">Gagal memuatkan data: ${error.message}</p>`;
+            }
+        }
+
+
+        // --- PENYEDIAAN AWAL ---
+        
+        // Tetapkan event listener untuk butang tab
+        tabButtons.btn1.addEventListener('click', () => showTab('1'));
+        tabButtons.btn2.addEventListener('click', () => showTab('2'));
+        tabButtons.btn3.addEventListener('click', () => showTab('3'));
+
+        // Tunjukkan tab pertama semasa muat laman
+        showTab('1');
+    </script>
+</body>
+</html>
