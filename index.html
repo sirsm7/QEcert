@@ -3,19 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem e-Sijil</title>
+    <title>Sistem e-Sijil JPN Melaka</title>
+    
     <!-- 1. Muatnaik Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <!-- 2. Muatnaik Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- 3. (BARU) Muatnaik SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
+    <!-- 4. (BARU) Muatnaik Fon Oswald -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <style>
+        /* (BARU) Guna fon Oswald sebagai default */
+        body {
+            font-family: 'Oswald', sans-serif;
+        }
+
         /* Paparan Sijil (Mesra Mudah Alih) */
         #sijil-wrapper {
             width: 100%;
             max-width: 210mm;
             aspect-ratio: 210 / 297;
-            height: auto; 
+            height: auto;
             position: relative;
             background-size: cover;
             background-position: center;
@@ -35,14 +51,8 @@
             box-sizing: border-box;
         }
 
-        /* --- BLOK CETAKAN YANG DIBAIKI --- */
+        /* Blok Cetakan yang Dibaiki */
         @media print {
-            /* === ARAHAN BARU: Set margin cetak ke SIFAR === */
-            @page {
-                size: A4 portrait; /* Pastikan saiz A4 */
-                margin: 0;       /* Tiada margin */
-            }
-
             body * {
                 visibility: hidden;
             }
@@ -70,14 +80,15 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans p-4 md:p-8">
+<body class="bg-gray-100 p-4 md:p-8">
 
     <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-        <header class="bg-blue-600 text-white p-6">
+        <!-- Pengepala (Header) - (DIKEMAS KINI) Warna Biru Tema -->
+        <header class="bg-blue-700 text-white p-6">
             <h1 class="text-3xl font-bold text-center">Sistem Pengurusan e-Sijil</h1>
         </header>
 
-        <!-- Navigasi Tab -->
+        <!-- Navigasi Tab - Aktif akan jadi Merah -->
         <nav class="flex border-b">
             <button id="tab-btn-1" class="tab-button flex-1 py-4 px-6 text-center font-medium text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                 Daftar Kehadiran
@@ -90,8 +101,7 @@
             </button>
         </nav>
 
-        <!-- Kontena Mesej Global -->
-        <div id="message-container" class="p-4 hidden"></div>
+        <!-- Kontena Mesej Global (Dibuang, diganti SweetAlert) -->
 
         <!-- Kandungan Tab -->
         <div class="p-6 md:p-8">
@@ -159,7 +169,8 @@
                         <p id="sekolah-helper" class="text-xs text-gray-500 mt-1">Wajib diisi jika peranan anda GURU, MURID, PEGAWAI JPN, atau PEGAWAI PPD.</p>
                     </div>
                     <div>
-                        <button type="submit" id="submit-btn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                        <!-- Butang Hantar - Warna Biru Tema -->
+                        <button type="submit" id="submit-btn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
                             Hantar Pendaftaran
                         </button>
                     </div>
@@ -169,15 +180,21 @@
             <!-- Tab 2: Semak Sijil -->
             <div id="tab-content-2" class="tab-content hidden">
                 <h2 class="text-2xl font-semibold mb-6 text-gray-800">Semakan Sijil</h2>
+                <!-- (DIKEMAS KINI) Borang dikemas kini dengan butang Reset -->
                 <form id="form-semakan" class="flex flex-col sm:flex-row gap-4 mb-6">
                     <div class="flex-grow">
                         <label for="nokp-semak" class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan</label>
                         <input type="text" id="nokp-semak" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                placeholder="Masukkan 12 digit No. KP" pattern="[0-9]{12}" maxlength="12" required>
                     </div>
-                    <div class="self-end">
-                        <button type="submit" id="search-btn" class="w-full sm:w-auto flex justify-center py-2 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
+                    <div class="flex items-end gap-2">
+                        <!-- Butang Cari - Warna Kuning Tema -->
+                        <button type="submit" id="search-btn" class="w-full sm:w-auto flex justify-center py-2 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-black bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400 transition duration-150 ease-in-out">
                             Cari
+                        </button>
+                        <!-- (BARU) Butang Reset -->
+                        <button type="button" id="reset-btn" class="w-full sm:w-auto flex justify-center py-2 px-6 border border-gray-300 rounded-md shadow-sm text-lg font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                            Reset
                         </button>
                     </div>
                 </form>
@@ -188,24 +205,35 @@
                 </div>
             </div>
 
-            <!-- Tab 3: Rumusan -->
+            <!-- Tab 3: Rumusan (Struktur dikemas kini) -->
             <div id="tab-content-3" class="tab-content hidden">
                 <h2 class="text-2xl font-semibold mb-6 text-gray-800">Rumusan Kehadiran</h2>
+                
+                <!-- (BARU) Kontena Rumusan Global -->
+                <div id="rumusan-global-container" class="mb-8 p-6 bg-gray-50 rounded-lg shadow-inner">
+                    <h3 class="text-xl font-bold mb-4">Rumusan Keseluruhan</h3>
+                    <!-- Data global (Jantina, Peranan) akan disuntik di sini -->
+                </div>
+                
+                <!-- Kontena Sedia Ada untuk Pecahan Negeri -->
+                <h3 class="text-xl font-bold mb-4">Pecahan Mengikut Negeri</h3>
                 <div id="rumusan-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Data rumusan akan disuntik di sini -->
+                    <!-- Data rumusan (heatmap) akan disuntik di sini -->
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- (DIKEMAS KINI) Footer dikemas kini -->
     <footer class="text-center text-gray-500 text-sm mt-8">
-        Dibina dengan ❤️ menggunakan HTML, Tailwind CSS dan Supabase.
+        Hakcipta Terpelihara #TEAMjpnmelaka
     </footer>
 
     <script type="module">
         // --- 3. KONFIGURASI SUPABASE ---
         const SUPABASE_URL = 'https://qixtrxechyvxjdxthfrb.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpeHRyeGVjaHl2eGpkeHRoZnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njg1NDcsImV4cCI6MjA3NzM0NDU0N30.emTaRn3JyI5hivpKxUL9kqmiV1TAJmH3oAohgBT-2eI';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpeHRyeGVjaHl2eGpkeHRoZnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njg1NDcsImV4cCI6MjA3NzM0NDU0N30.emTaRn3JyI5hivpKxUL9kqmiVTAJmH3oAohgBT-2eI';
+        
         const { createClient } = supabase;
         const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -225,7 +253,7 @@
             content2: document.getElementById('tab-content-2'),
             content3: document.getElementById('tab-content-3'),
         };
-        const msgContainer = document.getElementById('message-container');
+        // 'msgContainer' dibuang, diganti SweetAlert
         
         // Borang Pendaftaran (Tab 1)
         const formPendaftaran = document.getElementById('form-pendaftaran');
@@ -241,8 +269,10 @@
         const nokpSemakInput = document.getElementById('nokp-semak');
         const sijilContainer = document.getElementById('sijil-container');
         const searchBtn = document.getElementById('search-btn');
+        const resetBtn = document.getElementById('reset-btn'); // (BARU)
         
         // Rumusan (Tab 3)
+        const rumusanGlobalContainer = document.getElementById('rumusan-global-container'); // (BARU)
         const rumusanContainer = document.getElementById('rumusan-container');
         const perananWajibSekolah = ['MURID / PELAJAR', 'GURU', 'PEGAWAI DI JPN', 'PEGAWAI DI PPD'];
         const senaraiNegeri = [
@@ -252,25 +282,28 @@
         ];
         const senaraiPeranan = ['MURID / PELAJAR', 'GURU', 'PEGAWAI DI JPN', 'PEGAWAI DI PPD', 'IBU BAPA'];
 
+
         // --- FUNGSI UTAMA ---
+
+        // (DIKEMAS KINI) Fungsi untuk tukar tab (guna bg-red-600)
         function showTab(tabId) {
             Object.values(tabContents).forEach(content => content.classList.add('hidden'));
-            Object.values(tabButtons).forEach(btn => btn.classList.remove('bg-blue-600', 'text-white'));
+            // Guna bg-red-600 untuk tab aktif
+            Object.values(tabButtons).forEach(btn => btn.classList.remove('bg-red-600', 'text-white')); 
+            
             tabContents[`content${tabId}`].classList.remove('hidden');
-            tabButtons[`btn${tabId}`].classList.add('bg-blue-600', 'text-white');
-            if (tabId === '3') loadRumusan();
-            hideMessage();
-        }
-        function showMessage(message, type = 'success') {
-            msgContainer.innerHTML = message;
-            msgContainer.className = `p-4 rounded-md ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`;
-            msgContainer.classList.remove('hidden');
-        }
-        function hideMessage() {
-            msgContainer.classList.add('hidden');
+            tabButtons[`btn${tabId}`].classList.add('bg-red-600', 'text-white'); // Guna bg-red-600
+
+            if (tabId === '3') {
+                loadRumusan();
+            }
+            // 'hideMessage()' dibuang
         }
 
+        // 'showMessage' & 'hideMessage' dibuang, diganti SweetAlert
+
         // --- LOGIK TAB 1: PENDAFTARAN ---
+
         negeriSelect.addEventListener('change', () => {
             if (negeriSelect.value === 'MELAKA') {
                 daerahContainer.classList.remove('hidden');
@@ -281,6 +314,7 @@
                 daerahSelect.value = '';
             }
         });
+
         perananSelect.addEventListener('change', () => {
             if (perananWajibSekolah.includes(perananSelect.value)) {
                 sekolahInput.required = true;
@@ -291,10 +325,9 @@
             }
         });
 
-        // --- LOGIK PENDAFTARAN (UPSERT) YANG BARU ---
+        // (DIKEMAS KINI) Hantar borang pendaftaran (dengan SweetAlert)
         formPendaftaran.addEventListener('submit', async (e) => {
             e.preventDefault();
-            hideMessage();
             submitBtn.disabled = true;
             submitBtn.textContent = 'Menghantar...';
 
@@ -308,74 +341,59 @@
                 sekolah: formData.get('sekolah') || null,
             };
 
-            // Validasi tambahan
             if (perananWajibSekolah.includes(dataObj.peranan) && !dataObj.sekolah) {
-                showMessage('Nama Sekolah / Jabatan wajib diisi untuk peranan anda.', 'error');
+                // (BARU) Guna SweetAlert untuk ralat validasi
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Borang Tidak Lengkap',
+                    text: 'Nama Sekolah / Jabatan wajib diisi untuk peranan anda.',
+                });
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Hantar Pendaftaran';
                 return;
             }
 
             try {
-                // STRATEGI 2: UPSERT
-                // 1. Semak jika No. KP sudah wujud
-                const { data: existingUser, error: selectError } = await db
-                    .from('peserta')
-                    .select('id') // Hanya perlukan 'id' untuk pengesahan
-                    .eq('nokp', dataObj.nokp)
-                    .maybeSingle(); // Guna maybeSingle() - pulangkan null jika tiada, bukan ralat
-
-                if (selectError) {
-                    throw new Error(`Ralat semasa menyemak data: ${selectError.message}`);
+                const { data, error } = await db.from('peserta').insert([dataObj]).select();
+                
+                if (error) {
+                    if (error.code === '23505') {
+                        throw new Error('No. Kad Pengenalan ini telah didaftarkan.');
+                    }
+                    throw error;
                 }
 
-                if (existingUser) {
-                    // 2. JIKA WUJUD: Kemas kini (UPDATE) data sedia ada
-                    const { error: updateError } = await db
-                        .from('peserta')
-                        .update(dataObj) // Hantar semua data baru
-                        .eq('nokp', dataObj.nokp); // Berdasarkan No. KP
-                    
-                    if (updateError) {
-                        throw new Error(`Ralat semasa kemas kini: ${updateError.message}`);
-                    }
-                    
-                    showMessage('Maklumat anda telah berjaya dikemas kini!', 'success');
-                
-                } else {
-                    // 3. JIKA TIADA: Masukkan (INSERT) data baru
-                    const { error: insertError } = await db
-                        .from('peserta')
-                        .insert([dataObj]);
-                    
-                    if (insertError) {
-                        // Ralat 'unique' tidak sepatutnya berlaku, tapi sebagai langkah keselamatan
-                        if (insertError.code === '23505') {
-                            throw new Error('No. Kad Pengenalan ini telah didaftarkan (konflik).');
-                        }
-                        throw new Error(`Ralat semasa mendaftar: ${insertError.message}`);
-                    }
-                    
-                    showMessage('Pendaftaran berjaya! Sila ke Tab "Semak Sijil".', 'success');
-                }
-                
-                // Reset borang selepas berjaya (sama ada insert atau update)
+                // (BARU) Guna SweetAlert untuk kejayaan
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pendaftaran Berjaya!',
+                    text: 'Sila ke Tab "Semak Sijil" untuk muat turun sijil anda.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
                 formPendaftaran.reset();
                 daerahContainer.classList.add('hidden');
-
+            
             } catch (error) {
                 console.error('Ralat Pendaftaran:', error.message);
-                showMessage(`Proses Gagal: ${error.message}`, 'error');
+                // (BARU) Guna SweetAlert untuk ralat 'catch'
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pendaftaran Gagal',
+                    text: error.message,
+                });
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Hantar Pendaftaran';
             }
         });
 
+
         // --- LOGIK TAB 2: SEMAKAN SIJIL ---
+
+        // (DIKEMAS KINI) dengan SweetAlert
         formSemakan.addEventListener('submit', async (e) => {
             e.preventDefault();
-            hideMessage();
             sijilContainer.innerHTML = '';
             searchBtn.disabled = true;
             searchBtn.textContent = 'Mencari...';
@@ -387,22 +405,45 @@
                     .from('peserta')
                     .select('*')
                     .eq('nokp', nokp)
-                    .single(); 
+                    .single();
 
                 if (error || !data) {
                     throw new Error('Data tidak ditemui. Sila pastikan No. KP anda betul atau daftar di Tab 1.');
                 }
+
                 generateCertificate(data);
-                showMessage('Sijil ditemui. Sila skrol ke bawah untuk melihat.', 'success');
+                // (BARU) Guna SweetAlert 'toast' untuk notifikasi ringkas
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sijil Ditemui',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+
             } catch (error) {
                 console.error('Ralat Semakan:', error.message);
-                showMessage(`Semakan Gagal: ${error.message}`, 'error');
+                // (BARU) Guna SweetAlert untuk ralat
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Semakan Gagal',
+                    text: error.message,
+                });
             } finally {
                 searchBtn.disabled = false;
                 searchBtn.textContent = 'Cari';
             }
         });
 
+        // (BARU) Event listener untuk butang Reset
+        resetBtn.addEventListener('click', () => {
+            nokpSemakInput.value = '';
+            sijilContainer.innerHTML = '';
+        });
+
+        // Fungsi untuk jana HTML sijil (kekal sama)
         function generateCertificate(peserta) {
             sijilContainer.innerHTML = `
                 <div class="flex justify-center mb-4">
@@ -427,54 +468,126 @@
             });
         }
 
-        // --- LOGIK TAB 3: RUMUSAN ---
+
+        // --- (DIKEMAS KINI SEPENUHNYA) LOGIK TAB 3: RUMUSAN ---
+        
         async function loadRumusan() {
-            rumusanContainer.innerHTML = '<p class="text-gray-500">Memuatkan data rumusan...</p>';
+            const loadingHtml = '<p class="text-gray-500">Memuatkan data rumusan...</p>';
+            rumusanContainer.innerHTML = loadingHtml;
+            rumusanGlobalContainer.innerHTML = loadingHtml;
+            
             try {
+                // (BARU) Ambil 'nokp' juga untuk kiraan jantina
                 const { data, error } = await db
                     .from('peserta')
-                    .select('negeri, peranan');
+                    .select('negeri, peranan, nokp'); // Tambah 'nokp'
+
                 if (error) throw error;
-                const summary = {};
+
+                // 1. Sediakan templat rumusan (per-negeri)
+                const summaryNegeri = {};
                 senaraiNegeri.forEach(negeri => {
-                    summary[negeri] = { TOTAL: 0 };
+                    summaryNegeri[negeri] = { TOTAL: 0 };
                     senaraiPeranan.forEach(peranan => {
-                        summary[negeri][peranan] = 0;
+                        summaryNegeri[negeri][peranan] = 0;
                     });
                 });
-                let grandTotal = 0;
+                
+                // (BARU) Sediakan templat rumusan (global)
+                let summaryGlobal = {
+                    TOTAL: 0,
+                    LELAKI: 0,
+                    PEREMPUAN: 0,
+                    // Cipta { 'GURU': 0, 'MURID / PELAJAR': 0, ... }
+                    ...Object.fromEntries(senaraiPeranan.map(p => [p, 0])) 
+                };
+
+                // 2. Kira data
                 data.forEach(item => {
-                    if (summary[item.negeri] && summary[item.negeri][item.peranan] !== undefined) {
-                        summary[item.negeri][item.peranan]++;
-                        summary[item.negeri]['TOTAL']++;
-                        grandTotal++;
+                    // Kiraan Per-Negeri (sedia ada)
+                    if (summaryNegeri[item.negeri] && summaryNegeri[item.negeri][item.peranan] !== undefined) {
+                        summaryNegeri[item.negeri][item.peranan]++;
+                        summaryNegeri[item.negeri]['TOTAL']++;
+                    }
+
+                    // (BARU) Kiraan Global
+                    summaryGlobal.TOTAL++;
+                    
+                    // Kira Peranan Global
+                    if (summaryGlobal[item.peranan] !== undefined) {
+                        summaryGlobal[item.peranan]++;
+                    }
+
+                    // (BARU) Kira Jantina Global (Ganjil=Lelaki, Genap=Perempuan)
+                    if (item.nokp && item.nokp.length === 12) {
+                        const lastDigit = parseInt(item.nokp.slice(-1));
+                        if (lastDigit % 2 === 0) {
+                            summaryGlobal.PEREMPUAN++;
+                        } else {
+                            summaryGlobal.LELAKI++;
+                        }
                     }
                 });
-                let html = `
-                    <div class="col-span-1 md:col-span-2 lg:col-span-3 bg-blue-800 text-white p-4 rounded-lg shadow-lg">
-                        <h3 class="text-2xl font-bold">Jumlah Keseluruhan</h3>
-                        <p class="text-5xl font-extrabold">${grandTotal}</p>
+                
+                // 3. (BARU) Jana HTML untuk Rumusan Global
+                let globalHtml = `
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-sm font-medium text-gray-500">JUMLAH BESAR</div>
+                            <div class="text-3xl font-bold text-red-600">${summaryGlobal.TOTAL}</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-sm font-medium text-gray-500">LELAKI</div>
+                            <div class="text-3xl font-bold text-blue-600">${summaryGlobal.LELAKI}</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-sm font-medium text-gray-500">PEREMPUAN</div>
+                            <div class="text-3xl font-bold text-pink-500">${summaryGlobal.PEREMPUAN}</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-sm font-medium text-gray-500">NEGERI</div>
+                            <div class="text-3xl font-bold text-green-600">${senaraiNegeri.length}</div>
+                        </div>
                     </div>
+                    <hr class="my-6 border-gray-200">
+                    <h4 class="text-lg font-semibold mb-3">Pecahan Mengikut Peranan</h4>
+                    <ul class="space-y-2 text-gray-700">
+                        ${senaraiPeranan.map(peranan => `
+                            <li class="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm">
+                                <span class="font-medium">${peranan}</span>
+                                <span class="font-bold text-lg text-red-600">${summaryGlobal[peranan]}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
                 `;
-                const maxTotal = Math.max(...Object.values(summary).map(n => n.TOTAL));
+                rumusanGlobalContainer.innerHTML = globalHtml;
+
+                // 4. Jana HTML untuk Pecahan Negeri (Heatmap)
+                let heatmapHtml = '';
+                const maxTotal = Math.max(...Object.values(summaryNegeri).map(n => n.TOTAL));
+                
                 senaraiNegeri.forEach(negeri => {
-                    const negeriData = summary[negeri];
+                    const negeriData = summaryNegeri[negeri];
                     const total = negeriData.TOTAL;
-                    let bgOpacity = 20;
+                    
+                    let bgOpacity = 20; // Default untuk 0
                     if (maxTotal > 0 && total > 0) {
+                        // Skala dari 20% (min) hingga 100% (max)
                         bgOpacity = 20 + Math.floor((total / maxTotal) * 80);
                     }
-                    html += `
-                        <div class="border border-gray-200 rounded-lg shadow-md overflow-hidden bg-blue-500" style="background-color: rgba(59, 130, 246, ${bgOpacity / 100});">
-                            <div class="p-4 ${bgOpacity > 60 ? 'text-white' : 'text-gray-900'}">
+                    
+                    // Guna `bg-blue-600` untuk heatmap
+                    heatmapHtml += `
+                        <div class="border border-gray-200 rounded-lg shadow-md overflow-hidden bg-blue-600" style="background-color: rgba(37, 99, 235, ${bgOpacity / 100});">
+                            <div class="p-4 ${bgOpacity > 50 ? 'text-white' : 'text-gray-900'}">
                                 <h4 class="text-lg font-bold">${negeri}</h4>
                                 <p class="text-3xl font-extrabold">${total}</p>
                             </div>
-                            <div class="bg-gray-50 p-4 border-t ${bgOpacity > 60 ? 'text-gray-700' : ''}">
+                            <div class="bg-gray-50 p-4 border-t ${bgOpacity > 50 ? 'text-gray-700' : ''}">
                                 <ul class="text-sm space-y-1">
                                     ${senaraiPeranan.map(peranan => `
                                         <li class="flex justify-between">
-                                            <span>${peranan}</span>
+                                            <span>${peranan.replace(/ \/ PELAJAR| DI JPN| DI PPD/g, '')}</span>
                                             <span classs="font-medium">${negeriData[peranan]}</span>
                                         </li>
                                     `).join('')}
@@ -483,19 +596,24 @@
                         </div>
                     `;
                 });
-                rumusanContainer.innerHTML = html;
+                rumusanContainer.innerHTML = heatmapHtml;
+
             } catch (error) {
                 console.error('Ralat Memuatkan Rumusan:', error.message);
-                rumusanContainer.innerHTML = `<p class="text-red-500">Gagal memuatkan data: ${error.message}</p>`;
+                const errorHtml = `<p class="text-red-500">Gagal memuatkan data: ${error.message}</p>`;
+                rumusanContainer.innerHTML = errorHtml;
+                rumusanGlobalContainer.innerHTML = errorHtml;
             }
         }
 
+
         // --- PENYEDIAAN AWAL ---
+        
         tabButtons.btn1.addEventListener('click', () => showTab('1'));
         tabButtons.btn2.addEventListener('click', () => showTab('2'));
         tabButtons.btn3.addEventListener('click', () => showTab('3'));
+
         showTab('1');
     </script>
 </body>
 </html>
-
