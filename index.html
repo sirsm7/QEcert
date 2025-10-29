@@ -51,6 +51,12 @@
             box-sizing: border-box;
         }
 
+        /* Arahan khas untuk 'memaksa' tetapan halaman cetak */
+        @page {
+            size: A4 portrait; /* Tetapkan saiz kertas A4 dan orientasi potret */
+            margin: 0; /* Tetapkan margin cetakan kepada sifar */
+        }
+
         /* Blok Cetakan yang Dibaiki */
         @media print {
             body * {
@@ -83,9 +89,20 @@
 <body class="bg-gray-100 p-4 md:p-8">
 
     <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-        <!-- Pengepala (Header) - Warna Biru Tema -->
-        <header class="bg-blue-700 text-white p-6">
-            <h1 class="text-3xl font-bold text-center">Sistem Pengurusan e-Sijil</h1>
+        
+        <!-- Pengepala (Header) - Imej Baru -->
+        <header>
+            <!-- 
+                ARAHAN PENTING:
+                1. Muat naik imej header (tech2025.jpg) anda ke https://postimg.cc/
+                2. Salin 'Direct Link' yang anda dapat.
+                3. Gantikan 'URL_HEADER_ANDA_DI_SINI.jpg' di bawah dengan URL yang anda salin.
+            -->
+            <img 
+                src="https://i.postimg.cc/prtyDFJQ/tech2025.png" 
+                alt="Header Sistem e-Sijil" 
+                class="w-full h-auto"
+            >
         </header>
 
         <!-- Navigasi Tab - Aktif akan jadi Merah -->
