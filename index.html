@@ -11,17 +11,17 @@
     <!-- 2. Muatnaik Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- 3. (BARU) Muatnaik SweetAlert2 -->
+    <!-- 3. Muatnaik SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
-    <!-- 4. (BARU) Muatnaik Fon Oswald -->
+    <!-- 4. Muatnaik Fon Oswald -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* (BARU) Guna fon Oswald sebagai default */
+        /* Guna fon Oswald sebagai default */
         body {
             font-family: 'Oswald', sans-serif;
         }
@@ -83,7 +83,7 @@
 <body class="bg-gray-100 p-4 md:p-8">
 
     <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-        <!-- Pengepala (Header) - (DIKEMAS KINI) Warna Biru Tema -->
+        <!-- Pengepala (Header) - Warna Biru Tema -->
         <header class="bg-blue-700 text-white p-6">
             <h1 class="text-3xl font-bold text-center">Sistem Pengurusan e-Sijil</h1>
         </header>
@@ -100,8 +100,6 @@
                 Rumusan
             </button>
         </nav>
-
-        <!-- Kontena Mesej Global (Dibuang, diganti SweetAlert) -->
 
         <!-- Kandungan Tab -->
         <div class="p-6 md:p-8">
@@ -180,7 +178,6 @@
             <!-- Tab 2: Semak Sijil -->
             <div id="tab-content-2" class="tab-content hidden">
                 <h2 class="text-2xl font-semibold mb-6 text-gray-800">Semakan Sijil</h2>
-                <!-- (DIKEMAS KINI) Borang dikemas kini dengan butang Reset -->
                 <form id="form-semakan" class="flex flex-col sm:flex-row gap-4 mb-6">
                     <div class="flex-grow">
                         <label for="nokp-semak" class="block text-sm font-medium text-gray-700 mb-1">No. Kad Pengenalan</label>
@@ -192,7 +189,7 @@
                         <button type="submit" id="search-btn" class="w-full sm:w-auto flex justify-center py-2 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-black bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400 transition duration-150 ease-in-out">
                             Cari
                         </button>
-                        <!-- (BARU) Butang Reset -->
+                        <!-- Butang Reset -->
                         <button type="button" id="reset-btn" class="w-full sm:w-auto flex justify-center py-2 px-6 border border-gray-300 rounded-md shadow-sm text-lg font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
                             Reset
                         </button>
@@ -209,7 +206,7 @@
             <div id="tab-content-3" class="tab-content hidden">
                 <h2 class="text-2xl font-semibold mb-6 text-gray-800">Rumusan Kehadiran</h2>
                 
-                <!-- (BARU) Kontena Rumusan Global -->
+                <!-- Kontena Rumusan Global -->
                 <div id="rumusan-global-container" class="mb-8 p-6 bg-gray-50 rounded-lg shadow-inner">
                     <h3 class="text-xl font-bold mb-4">Rumusan Keseluruhan</h3>
                     <!-- Data global (Jantina, Peranan) akan disuntik di sini -->
@@ -224,7 +221,7 @@
         </div>
     </div>
 
-    <!-- (DIKEMAS KINI) Footer dikemas kini -->
+    <!-- Footer dikemas kini -->
     <footer class="text-center text-gray-500 text-sm mt-8">
         Hakcipta Terpelihara #TEAMjpnmelaka
     </footer>
@@ -253,7 +250,6 @@
             content2: document.getElementById('tab-content-2'),
             content3: document.getElementById('tab-content-3'),
         };
-        // 'msgContainer' dibuang, diganti SweetAlert
         
         // Borang Pendaftaran (Tab 1)
         const formPendaftaran = document.getElementById('form-pendaftaran');
@@ -269,10 +265,10 @@
         const nokpSemakInput = document.getElementById('nokp-semak');
         const sijilContainer = document.getElementById('sijil-container');
         const searchBtn = document.getElementById('search-btn');
-        const resetBtn = document.getElementById('reset-btn'); // (BARU)
+        const resetBtn = document.getElementById('reset-btn');
         
         // Rumusan (Tab 3)
-        const rumusanGlobalContainer = document.getElementById('rumusan-global-container'); // (BARU)
+        const rumusanGlobalContainer = document.getElementById('rumusan-global-container');
         const rumusanContainer = document.getElementById('rumusan-container');
         const perananWajibSekolah = ['MURID / PELAJAR', 'GURU', 'PEGAWAI DI JPN', 'PEGAWAI DI PPD'];
         const senaraiNegeri = [
@@ -285,7 +281,7 @@
 
         // --- FUNGSI UTAMA ---
 
-        // (DIKEMAS KINI) Fungsi untuk tukar tab (guna bg-red-600)
+        // Fungsi untuk tukar tab (guna bg-red-600)
         function showTab(tabId) {
             Object.values(tabContents).forEach(content => content.classList.add('hidden'));
             // Guna bg-red-600 untuk tab aktif
@@ -297,10 +293,7 @@
             if (tabId === '3') {
                 loadRumusan();
             }
-            // 'hideMessage()' dibuang
         }
-
-        // 'showMessage' & 'hideMessage' dibuang, diganti SweetAlert
 
         // --- LOGIK TAB 1: PENDAFTARAN ---
 
@@ -325,7 +318,7 @@
             }
         });
 
-        // (DIKEMAS KINI) Hantar borang pendaftaran (dengan SweetAlert)
+        // Hantar borang pendaftaran (dengan SweetAlert)
         formPendaftaran.addEventListener('submit', async (e) => {
             e.preventDefault();
             submitBtn.disabled = true;
@@ -342,7 +335,7 @@
             };
 
             if (perananWajibSekolah.includes(dataObj.peranan) && !dataObj.sekolah) {
-                // (BARU) Guna SweetAlert untuk ralat validasi
+                // Guna SweetAlert untuk ralat validasi
                 Swal.fire({
                     icon: 'error',
                     title: 'Borang Tidak Lengkap',
@@ -354,20 +347,23 @@
             }
 
             try {
-                const { data, error } = await db.from('peserta').insert([dataObj]).select();
+                // (DIKEMAS KINI) Guna 'upsert' untuk membenarkan kemas kini jika No KP wujud
+                const { data, error } = await db
+                    .from('peserta')
+                    .upsert(dataObj, { onConflict: 'nokp' }) // Jika 'nokp' wujud, ia akan 'update'
+                    .select();
                 
                 if (error) {
-                    if (error.code === '23505') {
-                        throw new Error('No. Kad Pengenalan ini telah didaftarkan.');
-                    }
+                    // Ralat 23505 (unique violation) tidak akan berlaku lagi
+                    // tetapi kita masih perlu tangani ralat lain
                     throw error;
                 }
 
-                // (BARU) Guna SweetAlert untuk kejayaan
+                // (DIKEMAS KINI) Mesej SweetAlert
                 Swal.fire({
                     icon: 'success',
                     title: 'Pendaftaran Berjaya!',
-                    text: 'Sila ke Tab "Semak Sijil" untuk muat turun sijil anda.',
+                    text: 'Maklumat anda telah disimpan/dikemas kini. Sila ke Tab "Semak Sijil".',
                     timer: 2000,
                     showConfirmButton: false
                 });
@@ -376,7 +372,7 @@
             
             } catch (error) {
                 console.error('Ralat Pendaftaran:', error.message);
-                // (BARU) Guna SweetAlert untuk ralat 'catch'
+                // Guna SweetAlert untuk ralat 'catch'
                 Swal.fire({
                     icon: 'error',
                     title: 'Pendaftaran Gagal',
@@ -391,7 +387,7 @@
 
         // --- LOGIK TAB 2: SEMAKAN SIJIL ---
 
-        // (DIKEMAS KINI) dengan SweetAlert
+        // dengan SweetAlert
         formSemakan.addEventListener('submit', async (e) => {
             e.preventDefault();
             sijilContainer.innerHTML = '';
@@ -412,7 +408,7 @@
                 }
 
                 generateCertificate(data);
-                // (BARU) Guna SweetAlert 'toast' untuk notifikasi ringkas
+                // Guna SweetAlert 'toast' untuk notifikasi ringkas
                 Swal.fire({
                     icon: 'success',
                     title: 'Sijil Ditemui',
@@ -425,7 +421,7 @@
 
             } catch (error) {
                 console.error('Ralat Semakan:', error.message);
-                // (BARU) Guna SweetAlert untuk ralat
+                // Guna SweetAlert untuk ralat
                 Swal.fire({
                     icon: 'error',
                     title: 'Semakan Gagal',
@@ -437,7 +433,7 @@
             }
         });
 
-        // (BARU) Event listener untuk butang Reset
+        // Event listener untuk butang Reset
         resetBtn.addEventListener('click', () => {
             nokpSemakInput.value = '';
             sijilContainer.innerHTML = '';
@@ -469,7 +465,7 @@
         }
 
 
-        // --- (DIKEMAS KINI SEPENUHNYA) LOGIK TAB 3: RUMUSAN ---
+        // --- LOGIK TAB 3: RUMUSAN ---
         
         async function loadRumusan() {
             const loadingHtml = '<p class="text-gray-500">Memuatkan data rumusan...</p>';
@@ -477,12 +473,12 @@
             rumusanGlobalContainer.innerHTML = loadingHtml;
             
             try {
-                // (BARU) Ambil 'nokp' juga untuk kiraan jantina
+                // Ambil 'nokp' juga untuk kiraan jantina
                 const { data, error } = await db
                     .from('peserta')
                     .select('negeri, peranan, nokp'); // Tambah 'nokp'
 
-                if (error) throw error;
+                if (error) throw error; // Ralat akan ditangkap oleh 'catch'
 
                 // 1. Sediakan templat rumusan (per-negeri)
                 const summaryNegeri = {};
@@ -493,24 +489,23 @@
                     });
                 });
                 
-                // (BARU) Sediakan templat rumusan (global)
+                // Sediakan templat rumusan (global)
                 let summaryGlobal = {
                     TOTAL: 0,
                     LELAKI: 0,
                     PEREMPUAN: 0,
-                    // Cipta { 'GURU': 0, 'MURID / PELAJAR': 0, ... }
                     ...Object.fromEntries(senaraiPeranan.map(p => [p, 0])) 
                 };
 
                 // 2. Kira data
                 data.forEach(item => {
-                    // Kiraan Per-Negeri (sedia ada)
+                    // Kiraan Per-Negeri
                     if (summaryNegeri[item.negeri] && summaryNegeri[item.negeri][item.peranan] !== undefined) {
                         summaryNegeri[item.negeri][item.peranan]++;
                         summaryNegeri[item.negeri]['TOTAL']++;
                     }
 
-                    // (BARU) Kiraan Global
+                    // Kiraan Global
                     summaryGlobal.TOTAL++;
                     
                     // Kira Peranan Global
@@ -518,7 +513,7 @@
                         summaryGlobal[item.peranan]++;
                     }
 
-                    // (BARU) Kira Jantina Global (Ganjil=Lelaki, Genap=Perempuan)
+                    // Kira Jantina Global (Ganjil=Lelaki, Genap=Perempuan)
                     if (item.nokp && item.nokp.length === 12) {
                         const lastDigit = parseInt(item.nokp.slice(-1));
                         if (lastDigit % 2 === 0) {
@@ -529,7 +524,11 @@
                     }
                 });
                 
-                // 3. (BARU) Jana HTML untuk Rumusan Global
+                // (BARU) Kira bilangan negeri unik yang telah mendaftar
+                // Ini akan mengira ['MELAKA', 'JOHOR', 'MELAKA'] sebagai 2
+                const negeriUnik = new Set(data.map(item => item.negeri));
+
+                // 3. Jana HTML untuk Rumusan Global
                 let globalHtml = `
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                         <div class="bg-white p-4 rounded-lg shadow">
@@ -546,7 +545,8 @@
                         </div>
                         <div class="bg-white p-4 rounded-lg shadow">
                             <div class="text-sm font-medium text-gray-500">NEGERI</div>
-                            <div class="text-3xl font-bold text-green-600">${senaraiNegeri.length}</div>
+                            <!-- (DIKEMAS KINI) Guna saiz Set, bukan panjang senarai -->
+                            <div class="text-3xl font-bold text-green-600">${negeriUnik.size}</div>
                         </div>
                     </div>
                     <hr class="my-6 border-gray-200">
@@ -572,7 +572,6 @@
                     
                     let bgOpacity = 20; // Default untuk 0
                     if (maxTotal > 0 && total > 0) {
-                        // Skala dari 20% (min) hingga 100% (max)
                         bgOpacity = 20 + Math.floor((total / maxTotal) * 80);
                     }
                     
@@ -600,9 +599,16 @@
 
             } catch (error) {
                 console.error('Ralat Memuatkan Rumusan:', error.message);
-                const errorHtml = `<p class="text-red-500">Gagal memuatkan data: ${error.message}</p>`;
+                const errorHtml = `<p class="text-red-500 font-bold">Gagal memuatkan data: ${error.message}</p>`;
                 rumusanContainer.innerHTML = errorHtml;
                 rumusanGlobalContainer.innerHTML = errorHtml;
+
+                // Papar SweetAlert jika gagal muat rumusan
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Muat Rumusan',
+                    text: error.message,
+                });
             }
         }
 
@@ -613,7 +619,15 @@
         tabButtons.btn2.addEventListener('click', () => showTab('2'));
         tabButtons.btn3.addEventListener('click', () => showTab('3'));
 
+        // Juga tukar logik pendaftaran untuk benarkan kemas kini
+        // Jika pengguna hantar No KP yang sama, ia akan kemas kini data lama
+        // dan tidak akan tunjuk ralat "No KP telah didaftarkan"
+        // Ini dicapai dengan menukar .insert() kepada .upsert()
+        
+        // (Logik pendaftaran telah diubah di atas untuk menggunakan .upsert())
+
         showTab('1');
     </script>
 </body>
 </html>
+
