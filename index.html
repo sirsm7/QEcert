@@ -227,11 +227,6 @@
                 
                 <!-- Kontena Sedia Ada untuk Pecahan Negeri -->
                 <h3 class="text-xl font-bold mb-4">Pecahan Mengikut Negeri</h3>
-                <!-- 
-                    --- INI PERUBAHANNYA ---
-                    Saya menukar 'lg:grid-cols-3' kepada 'lg:grid-cols-4' 
-                    untuk memaparkan 4 kad sebaris pada skrin besar.
-                -->
                 <div id="rumusan-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- Data rumusan (heatmap) akan disuntik di sini -->
                 </div>
@@ -594,8 +589,10 @@
                     }
                     
                     // Guna `bg-blue-600` untuk heatmap
+                    // --- PERUBAHAN DI SINI ---
+                    // Saya tambah 'flex flex-col' untuk membetulkan susunan kad yang meregang
                     heatmapHtml += `
-                        <div class="border border-gray-200 rounded-lg shadow-md overflow-hidden bg-blue-600" style="background-color: rgba(37, 99, 235, ${bgOpacity / 100});">
+                        <div class="border border-gray-200 rounded-lg shadow-md overflow-hidden bg-blue-600 flex flex-col" style="background-color: rgba(37, 99, 235, ${bgOpacity / 100});">
                             <div class="p-4 ${bgOpacity > 50 ? 'text-white' : 'text-gray-900'}">
                                 <h4 class="text-lg font-bold">${negeri}</h4>
                                 <p class="text-3xl font-extrabold">${total}</p>
@@ -605,7 +602,10 @@
                                     ${senaraiPeranan.map(peranan => `
                                         <li class="flex justify-between">
                                             <span>${peranan.replace(/ \/ PELAJAR| DI JPN| DI PPD/g, '')}</span>
-                                            <span classs="font-medium">${negeriData[peranan]}</span>
+                                            <!-- --- PERUBAHAN DI SINI --- 
+                                                 Membetulkan typo 'classs' kepada 'class' 
+                                            -->
+                                            <span class="font-medium">${negeriData[peranan]}</span>
                                         </li>
                                     `).join('')}
                                 </ul>
@@ -639,7 +639,7 @@
 
         // Juga tukar logik pendaftaran untuk benarkan kemas kini
         // Jika pengguna hantar No KP yang sama, ia akan kemas kini data lama
-        // dan tidak akan tunjuk ralat "No KP telah didaftarkan"
+        // dan tidak akan tunjuk ralat "No KP telah dibatalkan"
         // Ini dicapai dengan menukar .insert() kepada .upsert()
         
         // (Logik pendaftaran telah diubah di atas untuk menggunakan .upsert())
@@ -648,3 +648,4 @@
     </script>
 </body>
 </html>
+
