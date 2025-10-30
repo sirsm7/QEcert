@@ -94,12 +94,6 @@
         
         <!-- Pengepala (Header) - Imej Baru -->
         <header>
-            <!-- 
-                ARAHAN PENTING:
-                1. Muat naik imej header (tech2025.jpg) anda ke https://postimg.cc/
-                2. Salin 'Direct Link' yang anda dapat.
-                3. Gantikan 'URL_HEADER_ANDA_DI_SINI.jpg' di bawah dengan URL yang anda salin.
-            -->
             <img 
                 src="https://i.postimg.cc/prtyDFJQ/tech2025.png" 
                 alt="Header Sistem e-Sijil" 
@@ -233,7 +227,12 @@
                 
                 <!-- Kontena Sedia Ada untuk Pecahan Negeri -->
                 <h3 class="text-xl font-bold mb-4">Pecahan Mengikut Negeri</h3>
-                <div id="rumusan-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- 
+                    --- INI PERUBAHANNYA ---
+                    Saya menukar 'lg:grid-cols-3' kepada 'lg:grid-cols-4' 
+                    untuk memaparkan 4 kad sebaris pada skrin besar.
+                -->
+                <div id="rumusan-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- Data rumusan (heatmap) akan disuntik di sini -->
                 </div>
             </div>
@@ -649,4 +648,3 @@
     </script>
 </body>
 </html>
-
