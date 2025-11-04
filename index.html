@@ -36,7 +36,7 @@
             background-repeat: no-repeat;
             margin: 20px auto;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            /* --- DIKEMASKINI: URL Latar Belakang Baharu --- */
+            /* Latar Belakang dari permintaan sebelum ini dikekalkan */
             background-image: url('https://i.postimg.cc/Nf2cf0Dy/Sijil-Kehadiran-Techlympics.png');
         }
 
@@ -228,9 +228,8 @@
         const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // --- KONFIGURASI SIJIL (DIKEMASKINI) ---
-        const POSISI_NAMA = '46%'; // Ini kini merujuk kepada POSISI ATAS untuk keseluruhan BLOK TEKS
-        // const POSISI_NOKP = '51%'; // Tidak lagi diguna
-        // const POSISI_PERANAN = '58%'; // Tidak lagi diguna
+        // Kedudukan diubah kepada 45% (atas sedikit) berdasarkan permintaan
+        const POSISI_NAMA = '45%'; 
 
         // --- ELEMEN DOM ---
         const tabButtons = {
@@ -447,7 +446,7 @@
                                 font-family: Arial, sans-serif; 
                                 line-height: 1.2;">
                         
-                        <div style="font-size: 20px;">
+                        <div style="font-size: 20px; font-weight: bold;">
                             ${peserta.nama}
                         </div>
                         
