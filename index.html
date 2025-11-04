@@ -7,17 +7,13 @@
 	
 	<link rel="icon" type="image/png" href="https://i.postimg.cc/jdp3yqpZ/logotech.png">
     
-    <!-- 1. Muatnaik Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 2. Muatnaik Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- 3. Muatnaik SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
-    <!-- 4. Muatnaik Fon Oswald -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
@@ -40,14 +36,15 @@
             background-repeat: no-repeat;
             margin: 20px auto;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            background-image: url('https://i.postimg.cc/jqwgDrG4/BG-Sijil.png');
+            /* --- DIKEMASKINI: URL Latar Belakang Baharu --- */
+            background-image: url('https://i.postimg.cc/Nf2cf0Dy/Sijil-Kehadiran-Techlympics.png');
         }
 
         .sijil-text {
             position: absolute;
             width: 100%;
             text-align: center;
-            font-family: 'Times New Roman', Times, serif;
+            font-family: 'Times New Roman', Times, serif; /* Fon ini akan di 'override' oleh inline style jika perlu */
             color: black;
             padding: 0 10%;
             box-sizing: border-box;
@@ -92,7 +89,6 @@
 
     <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
         
-        <!-- Pengepala (Header) - Imej Baru -->
         <header>
             <img 
                 src="https://i.postimg.cc/prtyDFJQ/tech2025.png" 
@@ -101,7 +97,6 @@
             >
         </header>
 
-        <!-- Navigasi Tab - Aktif akan jadi Merah -->
         <nav class="flex border-b">
             <button id="tab-btn-1" class="tab-button flex-1 py-4 px-6 text-center font-medium text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                 Daftar Kehadiran
@@ -114,9 +109,7 @@
             </button>
         </nav>
 
-        <!-- Kandungan Tab -->
         <div class="p-6 md:p-8">
-            <!-- Tab 1: Daftar Kehadiran -->
             <div id="tab-content-1" class="tab-content">
                 <h2 class="text-2xl font-semibold mb-6 text-gray-800">Borang Pendaftaran Peserta</h2>
                 <form id="form-pendaftaran" class="space-y-6">
@@ -152,7 +145,6 @@
                             <option value="WILAYAH PERSEKUTUAN PUTRAJAYA">WILAYAH PERSEKUTUAN PUTRAJAYA</option>
                         </select>
                     </div>
-                    <!-- Kontena Daerah (Hanya untuk Melaka) -->
                     <div id="daerah-melaka-container" class="hidden space-y-1">
                         <label for="daerah" class="block text-sm font-medium text-gray-700">Daerah (Melaka)</label>
                         <select id="daerah" name="daerah" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white">
@@ -180,7 +172,6 @@
                         <p id="sekolah-helper" class="text-xs text-gray-500 mt-1">Wajib diisi jika peranan anda GURU, MURID, PEGAWAI JPN, atau PEGAWAI PPD.</p>
                     </div>
                     <div>
-                        <!-- Butang Hantar - Warna Biru Tema -->
                         <button type="submit" id="submit-btn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
                             Hantar Pendaftaran
                         </button>
@@ -188,7 +179,6 @@
                 </form>
             </div>
 
-            <!-- Tab 2: Semak Sijil -->
             <div id="tab-content-2" class="tab-content hidden">
                 <h2 class="text-2xl font-semibold mb-6 text-gray-800">Semakan Sijil</h2>
                 <form id="form-semakan" class="flex flex-col sm:flex-row gap-4 mb-6">
@@ -198,43 +188,33 @@
                                placeholder="Masukkan 12 digit No. KP" pattern="[0-9]{12}" maxlength="12" required>
                     </div>
                     <div class="flex items-end gap-2">
-                        <!-- Butang Cari - Warna Kuning Tema -->
                         <button type="submit" id="search-btn" class="w-full sm:w-auto flex justify-center py-2 px-6 border border-transparent rounded-md shadow-sm text-lg font-medium text-black bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400 transition duration-150 ease-in-out">
                             Cari
                         </button>
-                        <!-- Butang Reset -->
                         <button type="button" id="reset-btn" class="w-full sm:w-auto flex justify-center py-2 px-6 border border-gray-300 rounded-md shadow-sm text-lg font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
                             Reset
                         </button>
                     </div>
                 </form>
                 
-                <!-- Ruang untuk paparan sijil -->
                 <div id="sijil-container" class="mt-6">
-                    <!-- Sijil akan disuntik di sini oleh JavaScript -->
-                </div>
+                    </div>
             </div>
 
-            <!-- Tab 3: Rumusan (Struktur dikemas kini) -->
             <div id="tab-content-3" class="tab-content hidden">
                 <h2 class="text-2xl font-semibold mb-6 text-gray-800">Rumusan Kehadiran</h2>
                 
-                <!-- Kontena Rumusan Global -->
                 <div id="rumusan-global-container" class="mb-8 p-6 bg-gray-50 rounded-lg shadow-inner">
                     <h3 class="text-xl font-bold mb-4">Rumusan Keseluruhan</h3>
-                    <!-- Data global (Jantina, Peranan) akan disuntik di sini -->
-                </div>
+                    </div>
                 
-                <!-- Kontena Sedia Ada untuk Pecahan Negeri -->
                 <h3 class="text-xl font-bold mb-4">Pecahan Mengikut Negeri</h3>
                 <div id="rumusan-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Data rumusan (heatmap) akan disuntik di sini -->
-                </div>
+                    </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer dikemas kini -->
     <footer class="text-center text-gray-500 text-sm mt-8">
         Hakcipta Terpelihara #TEAMjpnmelaka
     </footer>
@@ -247,10 +227,10 @@
         const { createClient } = supabase;
         const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // --- KONFIGURASI SIJIL ---
-        const POSISI_NAMA = '46%';
-        const POSISI_NOKP = '51%';
-        const POSISI_PERANAN = '58%';
+        // --- KONFIGURASI SIJIL (DIKEMASKINI) ---
+        const POSISI_NAMA = '46%'; // Ini kini merujuk kepada POSISI ATAS untuk keseluruhan BLOK TEKS
+        // const POSISI_NOKP = '51%'; // Tidak lagi diguna
+        // const POSISI_PERANAN = '58%'; // Tidak lagi diguna
 
         // --- ELEMEN DOM ---
         const tabButtons = {
@@ -452,7 +432,7 @@
             sijilContainer.innerHTML = '';
         });
 
-        // Fungsi untuk jana HTML sijil (kekal sama)
+        // --- FUNGSI DIKEMASKINI UNTUK JANA SIJIL ---
         function generateCertificate(peserta) {
             sijilContainer.innerHTML = `
                 <div class="flex justify-center mb-4">
@@ -461,17 +441,23 @@
                     </button>
                 </div>
                 <div id="sijil-wrapper">
-                    <div class="sijil-text" style="top: ${POSISI_NAMA}; font-size: 1.8rem; font-weight: bold;">
-                        ${peserta.nama}
+                
+                    <div class="sijil-text" 
+                         style="top: ${POSISI_NAMA}; 
+                                font-family: Arial, sans-serif; 
+                                line-height: 1.2;">
+                        
+                        <div style="font-size: 20px;">
+                            ${peserta.nama}
+                        </div>
+                        
+                        <div style="font-size: 14px; font-style: italic;"> 
+                            (${peserta.nokp})
+                        </div>
                     </div>
-                    <div class="sijil-text" style="top: ${POSISI_NOKP}; font-size: 1.2rem;">
-                        ${peserta.nokp}
                     </div>
-                    <div class="sijil-text" style="top: ${POSISI_PERANAN}; font-size: 1.3rem; font-weight: bold; text-transform: uppercase;">
-                        SEBAGAI ${peserta.peranan}
-                    </div>
-                </div>
             `;
+            // Pasang semula event listener untuk butang cetak yang baru dijana
             document.getElementById('print-button').addEventListener('click', () => {
                 window.print();
             });
@@ -558,7 +544,6 @@
                         </div>
                         <div class="bg-white p-4 rounded-lg shadow">
                             <div class="text-sm font-medium text-gray-500">NEGERI</div>
-                            <!-- (DIKEMAS KINI) Guna saiz Set, bukan panjang senarai -->
                             <div class="text-3xl font-bold text-green-600">${negeriUnik.size}</div>
                         </div>
                     </div>
@@ -602,9 +587,6 @@
                                     ${senaraiPeranan.map(peranan => `
                                         <li class="flex justify-between">
                                             <span>${peranan.replace(/ \/ PELAJAR| DI JPN| DI PPD/g, '')}</span>
-                                            <!-- --- PERUBAHAN DI SINI --- 
-                                                 Membetulkan typo 'classs' kepada 'class' 
-                                            -->
                                             <span class="font-medium">${negeriData[peranan]}</span>
                                         </li>
                                     `).join('')}
@@ -648,4 +630,3 @@
     </script>
 </body>
 </html>
-
