@@ -24,11 +24,11 @@
             font-family: 'Oswald', sans-serif;
         }
 
-        /* Paparan Sijil (Mesra Mudah Alih) */
+        /* Paparan Sijil (Mesra Mudah Alih) - DIKEMASKINI UNTUK SAIZ LETTER */
         #sijil-wrapper {
             width: 100%;
-            max-width: 210mm;
-            aspect-ratio: 210 / 297;
+            max-width: 215.9mm; /* Lebar saiz Letter (8.5in) */
+            aspect-ratio: 215.9 / 279.4; /* Nisbah saiz Letter (8.5 / 11) */
             height: auto;
             position: relative;
             background-size: cover;
@@ -50,13 +50,13 @@
             box-sizing: border-box;
         }
 
-        /* Arahan khas untuk 'memaksa' tetapan halaman cetak */
+        /* Arahan khas untuk 'memaksa' tetapan halaman cetak - DIKEMASKINI UNTUK SAIZ LETTER */
         @page {
-            size: A4 portrait; /* Tetapkan saiz kertas A4 dan orientasi potret */
+            size: letter portrait; /* Tetapkan saiz kertas Letter dan orientasi potret */
             margin: 0; /* Tetapkan margin cetakan kepada sifar */
         }
 
-        /* Blok Cetakan yang Dibaiki */
+        /* Blok Cetakan yang Dibaiki - DIKEMASKINI UNTUK SAIZ LETTER */
         @media print {
             body * {
                 visibility: hidden;
@@ -71,8 +71,8 @@
                 position: absolute;
                 left: 0;
                 top: 0;
-                width: 210mm;
-                height: 297mm;
+                width: 215.9mm; /* Lebar saiz Letter (8.5in) */
+                height: 279.4mm; /* Tinggi saiz Letter (11in) */
                 max-width: none;
                 aspect-ratio: auto;
                 margin: 0;
@@ -445,7 +445,7 @@
                          style="top: ${POSISI_NAMA}; 
                                 font-family: Arial, sans-serif; 
                                 line-height: 1.2;
-								left:14%;
+								left:12%;
 								width:94%">
                         
                         <div style="font-size: 32px; font-weight: bold;">
