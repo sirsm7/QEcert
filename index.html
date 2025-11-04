@@ -270,6 +270,15 @@
         ];
         const senaraiPeranan = ['MURID / PELAJAR', 'GURU', 'PEGAWAI DI JPN', 'PEGAWAI DI PPD', 'IBU BAPA'];
 
+        // --- (PERUBAHAN 1: TAMBAH PEMETAAN NAMA PAPARAN) ---
+        const namaPaparanPeranan = {
+            'MURID / PELAJAR': 'MURID',
+            'GURU': 'GURU',
+            'PEGAWAI DI JPN': 'JPN',
+            'PEGAWAI DI PPD': 'PPD',
+            'IBU BAPA': 'IBU BAPA'
+        };
+
 
         // --- FUNGSI UTAMA ---
 
@@ -587,7 +596,7 @@
                                 <ul class="text-sm space-y-1">
                                     ${senaraiPeranan.map(peranan => `
                                         <li class="flex justify-between">
-                                            <span>${peranan.replace(/ \/ PELAJAR| DI JPN| DI PPD/g, '')}</span>
+                                            <span>${namaPaparanPeranan[peranan] || peranan}</span>
                                             <span class="font-medium">${negeriData[peranan]}</span>
                                         </li>
                                     `).join('')}
