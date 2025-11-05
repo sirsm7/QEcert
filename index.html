@@ -24,14 +24,14 @@
             font-family: 'Oswald', sans-serif;
         }
 
-        /* Paparan Sijil (Mesra Mudah Alih) */
+        /* Paparan Sijil (Mesra Mudah Alih) - TIADA PERUBAHAN DI SINI */
         #sijil-wrapper {
             width: 100%;
             max-width: 210mm;
             aspect-ratio: 210 / 297;
             height: auto;
             position: relative;
-            background-size: cover;
+            background-size: cover; /* 'cover' dikekalkan untuk paparan skrin */
             background-position: center;
             background-repeat: no-repeat;
             margin: 20px auto;
@@ -81,6 +81,13 @@
                 border: none;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                
+                /* --- PERUBAHAN PENTING DI SINI ---
+                   Ini memaksa imej latar belakang untuk meregang 
+                   mengisi 100% lebar (210mm) dan 100% tinggi (297mm) 
+                   semasa mencetak.
+                */
+                background-size: 100% 100% !important;
             }
         }
     </style>
