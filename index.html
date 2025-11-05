@@ -58,46 +58,40 @@
             margin: 0; 
         }
 
-        /* Blok Cetakan yang Dibaiki (Lebih Agresif) */
+        /* Blok Cetakan yang Dibaiki (Mengikut Logik Contoh Kod) */
         @media print {
             
-            /* 1. Sembunyikan semua elemen utama yang tidak berkaitan */
-            header, nav, footer, #tab-content-1, #tab-content-3 {
-                display: none !important;
-            }
-            
-            /* 2. Sembunyikan elemen dalam tab 2 yang tidak mahu dicetak */
-            #tab-content-2 > h2, 
-            #tab-content-2 > #form-semakan {
-                display: none !important;
-            }
-            
-            /* 3. Sembunyikan butang cetak yang dijana oleh JS */
-            #print-button {
-                display: none !important;
+            /* 1. Sembunyikan SEMUA elemen secara lalai */
+            body * {
+                visibility: hidden;
             }
 
-            /* 4. Reset semua padding/margin pada 'container' */
-            body, html {
-                margin: 0;
-                padding: 0;
+            /* 2. Sembunyikan 'container' butang cetak (ID ditambah dalam JS) */
+            #print-button-container {
+                display: none;
             }
-            .max-w-4xl, .p-6, #tab-content-2, #sijil-container {
+
+            /* 3. Tunjukkan 'container' sijil dan sijil itu sendiri */
+            #sijil-container, #sijil-wrapper, #sijil-wrapper * {
+                visibility: visible;
+            }
+            
+            /* 4. Reset semua 'parent' yang mungkin mengganggu */
+            body, html, .max-w-4xl, .p-6, #tab-content-2, #sijil-container {
                 margin: 0 !important;
                 padding: 0 !important;
                 border: none !important;
                 box-shadow: none !important;
-                width: auto;
-                max-width: none;
+                position: static !important; /* Pastikan tiada 'parent' yang 'relative' */
             }
 
-            /* 5. Tetapkan sijil sebagai satu-satunya perkara pada halaman */
+            /* 5. Ambil alih halaman dengan sijil */
             #sijil-wrapper {
-                position: absolute;
+                position: absolute !important; /* Paksa */
                 left: 0;
                 top: 0;
-                width: 210mm; /* INI TEPAT A4 (Lebar) */
-                height: 297mm; /* INI TEPAT A4 (Tinggi) */
+                width: 210mm;  /* Tepat A4 */
+                height: 297mm; /* Tepat A4 */
                 max-width: none;
                 aspect-ratio: auto;
                 margin: 0;
@@ -109,13 +103,10 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 background-size: 100% 100% !important;
-
-                /* 7. Jadikan ia 'visible' (jika kaedah lama masih ada) */
-                visibility: visible;
             }
 
-            /* 8. Pastikan teks di dalam sijil juga 'visible' */
-            #sijil-wrapper * {
+            /* 7. Pastikan teks sijil (position: absolute) juga nampak */
+            .sijil-text {
                 visibility: visible;
             }
         }
@@ -479,8 +470,9 @@
 
         // --- FUNGSI DIKEMASKINI UNTUK JANA SIJIL ---
         function generateCertificate(peserta) {
+            // --- PERUBAHAN JAVASCRIPT DI SINI ---
             sijilContainer.innerHTML = `
-                <div class="flex justify-center mb-4">
+                <div class="flex justify-center mb-4" id="print-button-container">
                     <button id="print-button" class="py-2 px-6 bg-green-600 text-white font-bold rounded-md shadow-md hover:bg-green-700 transition duration-150">
                         Cetak / Simpan PDF
                     </button>
