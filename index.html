@@ -24,19 +24,19 @@
             font-family: 'Oswald', sans-serif;
         }
 
-        /* Paparan Sijil (Mesra Mudah Alih) - TIADA PERUBAHAN DI SINI */
+        /* Paparan Sijil (Mesra Mudah Alih) */
         #sijil-wrapper {
             width: 100%;
             max-width: 210mm;
             aspect-ratio: 210 / 297;
             height: auto;
             position: relative;
-            background-size: 100% 100%;    /* stretch juga di skrin */
+            background-size: 100% 100%;    /* Kekal stretch */
             background-position: center;
             background-repeat: no-repeat;
             margin: 20px auto;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            /* Latar Belakang dari permintaan sebelum ini dikekalkan */
+            /* Fail .png anda dikekalkan seperti dalam kod asal anda */
             background-image: url('./sijil_techlym.png?v=1');
         }
 
@@ -44,52 +44,82 @@
             position: absolute;
             width: 100%;
             text-align: center;
-            font-family: 'Times New Roman', Times, serif; /* Fon ini akan di 'override' oleh inline style jika perlu */
+            font-family: 'Times New Roman', Times, serif;
             color: black;
             padding: 0 10%;
             box-sizing: border-box;
         }
 
-        /* Arahan khas untuk 'memaksa' tetapan halaman cetak */
+        /* --- PERUBAHAN CSS CETAK BERMULA DI SINI --- */
+
+        /* Arahan khas untuk 'memaksa' tetapan halaman cetak A4 */
         @page {
-            size: A4 portrait; /* Tetapkan saiz kertas A4 dan orientasi potret */
-            margin: 0; /* Tetapkan margin cetakan kepada sifar */
+            size: A4 portrait; /* INI SUDAH TEPAT A4 */
+            margin: 0; 
         }
 
-        /* Blok Cetakan yang Dibaiki */
+        /* Blok Cetakan yang Dibaiki (Lebih Agresif) */
         @media print {
-            body * {
-                visibility: hidden;
+            
+            /* 1. Sembunyikan semua elemen utama yang tidak berkaitan */
+            header, nav, footer, #tab-content-1, #tab-content-3 {
+                display: none !important;
             }
+            
+            /* 2. Sembunyikan elemen dalam tab 2 yang tidak mahu dicetak */
+            #tab-content-2 > h2, 
+            #tab-content-2 > #form-semakan {
+                display: none !important;
+            }
+            
+            /* 3. Sembunyikan butang cetak yang dijana oleh JS */
             #print-button {
-                display: none;
+                display: none !important;
             }
-            #sijil-wrapper, #sijil-wrapper * {
-                visibility: visible;
+
+            /* 4. Reset semua padding/margin pada 'container' */
+            body, html {
+                margin: 0;
+                padding: 0;
             }
+            .max-w-4xl, .p-6, #tab-content-2, #sijil-container {
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+                width: auto;
+                max-width: none;
+            }
+
+            /* 5. Tetapkan sijil sebagai satu-satunya perkara pada halaman */
             #sijil-wrapper {
                 position: absolute;
                 left: 0;
                 top: 0;
-                width: 210mm;
-                height: 297mm;
+                width: 210mm; /* INI TEPAT A4 (Lebar) */
+                height: 297mm; /* INI TEPAT A4 (Tinggi) */
                 max-width: none;
                 aspect-ratio: auto;
                 margin: 0;
                 padding: 0;
                 box-shadow: none;
                 border: none;
+                
+                /* 6. WAJIB: Paksa imej latar dicetak & meregang */
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                
-                /* --- PERUBAHAN PENTING DI SINI ---
-                   Ini memaksa imej latar belakang untuk meregang 
-                   mengisi 100% lebar (210mm) dan 100% tinggi (297mm) 
-                   semasa mencetak.
-                */
                 background-size: 100% 100% !important;
+
+                /* 7. Jadikan ia 'visible' (jika kaedah lama masih ada) */
+                visibility: visible;
+            }
+
+            /* 8. Pastikan teks di dalam sijil juga 'visible' */
+            #sijil-wrapper * {
+                visibility: visible;
             }
         }
+        /* --- PERUBAHAN CSS CETAK TAMAT DI SINI --- */
     </style>
 </head>
 <body class="bg-gray-100 p-4 md:p-8">
