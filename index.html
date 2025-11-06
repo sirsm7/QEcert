@@ -52,11 +52,9 @@
 
         /* --- PERUBAHAN CSS CETAK BERMULA DI SINI --- */
 
-        /* Arahan khas untuk 'memaksa' tetapan halaman cetak A4 */
-        @page {
-            size: A4 portrait; /* INI SUDAH TEPAT A4 */
-            margin: 0; 
-        }
+        /* NOTA: Blok @page telah dipadamkan 
+           untuk beralih kepada logik saiz pixel.
+        */
 
         /* Blok Cetakan yang Dibaiki (Mengikut Logik Contoh Kod) */
         @media print {
@@ -90,8 +88,8 @@
                 position: absolute !important; /* Paksa */
                 left: 0;
                 top: 0;
-                width: 794px;  /* Pixel A4 */
-                height: 1123px; /* Pixel A4 */
+                width: 794px;  /* Pixel A4 (Logik Prototaip) */
+                height: 1123px; /* Pixel A4 (Logik Prototaip) */
                 max-width: none;
                 aspect-ratio: auto;
                 margin: 0;
@@ -99,9 +97,10 @@
                 box-shadow: none;
                 border: none;
                 
-                /* 6. WAJIB: Paksa imej latar dicetak & meregang */
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                /* NOTA: 'print-color-adjust' telah dipadamkan.
+                   Imej latar kini bergantung pada tetapan
+                   "Background graphics" pengguna.
+                */
                 background-size: 100% 100% !important;
             }
 
