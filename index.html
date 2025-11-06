@@ -135,7 +135,8 @@
             <button id="tab-btn-3" class="tab-button flex-1 py-4 px-6 text-center font-medium text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                 Semak Sijil
             </button>
-            <button id="tab-btn-4" class="tab-button flex-1 py-4 px-6 text-center font-medium text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+            
+            <button id="tab-btn-4" class="tab-button flex-1 py-4 px-6 text-center font-medium text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out hidden md:flex">
                 Rumusan
             </button>
         </nav>
@@ -158,8 +159,11 @@
                 </div>
 
                 <div>
-                    <h3 class="text-xl font-bold mb-3">🖨️ PENTING! Tetapan Cetak Sijil (PDF)</h3>
-                    <p class="mb-4 text-gray-700">Selepas anda klik butang 'Cetak / Simpan PDF', satu tetingkap <i>preview</i> akan keluar. Sila ikut tetapan ini supaya sijil anda cantik & penuh satu muka surat.</p>
+                    <h3 class="text-xl font-bold mb-3">🖨️ PENTING! Tetapan Cetak (PC/Mac Sahaja)</h3>
+                    <p class="mb-4 text-gray-700">
+                        Arahan di bawah adalah khusus untuk pelayar (browser) <strong>Google Chrome di PC atau Mac</strong>.
+                        Tetapan ini mungkin tiada atau berbeza jika anda buka di telefon bimbit atau browser lain (seperti Firefox/Safari).
+                    </p>
                     
                     <ul class="list-disc list-inside space-y-2 pl-4 text-gray-700">
                         <li><strong>Destinasi</strong> (Destination): Pastikan ia <strong>Simpan sebagai PDF</strong> (Save as PDF).</li>
@@ -169,8 +173,8 @@
                         <li class="font-bold text-red-600"><strong>Skala</strong> (Scale): Pilih <strong>Custom</strong>, dan taip nombor <strong>150</strong>.</li>
                     </ul>
                     
-                    <blockquote class="mt-4 p-4 border-l-4 border-yellow-400 bg-yellow-50 text-yellow-800">
-                        Semak <i>preview</i> sijil. Jika nampak elok dan penuh satu muka surat (tiada muka surat kedua yang kosong), barulah tekan butang <strong>Save</strong> (Simpan).
+                    <blockquote class="mt-4 p-4 border-l-4 border-blue-400 bg-blue-50 text-blue-800">
+                        <strong>Tips:</strong> Sentiasa semak <i>preview</i> sijil. Jika nampak elok dan penuh satu muka surat (tiada muka surat kedua yang kosong), barulah tekan butang <strong>Save</strong> (Simpan).
                     </blockquote>
                 </div>
             </div>
@@ -697,7 +701,11 @@
         tabButtons.btn1.addEventListener('click', () => showTab('1'));
         tabButtons.btn2.addEventListener('click', () => showTab('2'));
         tabButtons.btn3.addEventListener('click', () => showTab('3'));
+        
+        // Event listener untuk Butang 4 masih wujud, ia tidak akan error walaupun butang itu 'hidden'
+        // Ia hanya bermakna fungsi 'showTab('4')' tidak akan dipanggil oleh pengguna di mobile
         tabButtons.btn4.addEventListener('click', () => showTab('4'));
+
 
         // Juga tukar logik pendaftaran untuk benarkan kemas kini
         // Jika pengguna hantar No KP yang sama, ia akan kemas kini data lama
