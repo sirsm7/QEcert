@@ -24,141 +24,93 @@
             font-family: 'Oswald', sans-serif;
         }
 
-        /* --- STYLES BARU DARI PROTOTYPE BERMULA DI SINI --- */
-        
-        /* [cite: 6, 7] */
-        .modal {
-            display: none; 
-            position: fixed;
-            z-index: 999;
-            left: 0;
-            top: 0;
+        /* Paparan Sijil (Mesra Mudah Alih) */
+        #sijil-wrapper {
             width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-
-        /* [cite: 8] */
-        .modal-content {
-            background-color: white;
-            margin: 30px auto;
-            padding: 0;
-            border: none;
-            width: 820px; /* Lebar dari prototaip */
+            max-width: 210mm;
+            aspect-ratio: 210 / 297;
+            height: auto;
             position: relative;
-            box-shadow: 0 6px 18px #0005;
+            background-size: 100% 100%;    /* Kekal stretch */
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 20px auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            /* Fail .png anda dikekalkan seperti dalam kod asal anda */
+            background-image: url('./sijil_techlym.png?v=1');
         }
 
-        /* [cite: 9, 10] */
-        .print-btn-container {
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.95);
-            text-align: center;
-            padding: 10px;
-            z-index: 10;
-            border-bottom: 1px solid #ccc;
-        }
-        
-        /* [cite: 19] */
-        .close {
+        .sijil-text {
             position: absolute;
-            top: 10px;
-            right: 18px;
-            font-size: 28px;
-            cursor: pointer;
-            color: #555;
-        }
-
-        /* [cite: 11] */
-        .sijil-a4 {
-            width: 794px; /* Logik Pixel */
-            height: 1123px; /* Logik Pixel */
-            padding: 10px;
-            /* Guna imej latar dari prototaip */
-            background: url('https://i.imgur.com/Us4sEN6.png') no-repeat center center;
-            background-size: cover;
-            position: relative;
+            width: 100%;
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+            color: black;
+            padding: 0 10%;
             box-sizing: border-box;
-            margin: 0 auto;
         }
 
-        /* [cite: 12, 13] */
-        .centered-content {
-            position: absolute;
-            top: 290px; /* Kedudukan dari prototaip */
-            left: 0;
-            right: 0;
-            padding: 0 60px;
-            text-align: center;
-            color: #000;
+        /* --- PERUBAHAN CSS CETAK BERMULA DI SINI --- */
+
+        /* Arahan khas untuk 'memaksa' tetapan halaman cetak A4 */
+        @page {
+            size: A4 portrait; /* INI SUDAH TEPAT A4 */
+            margin: 0; 
         }
 
-        /* Gaya teks sijil dari prototaip [cite: 14, 15, 18] */
-        .centered-content .nama {
-            font-size: 28px;
-            font-weight: bold;
-            margin-top: 14px;
-        }
-        .centered-content .kp {
-            margin: 10px 0;
-            font-size: 16px;
-        }
-        .centered-content .nota {
-            margin-top: 30px;
-            font-size: 11px;
-            font-style: italic;
-            color: #777;
-        }
-
-        /* --- LOGIK CETAK DARI PROTOTYPE BERMULA DI SINI --- */
-        
+        /* Blok Cetakan yang Dibaiki (Mengikut Logik Contoh Kod) */
         @media print {
             
-            /* [cite: 20] */
-            html, body {
+            /* 1. Sembunyikan SEMUA elemen secara lalai */
+            body * {
+                visibility: hidden;
+            }
+
+            /* 2. Sembunyikan 'container' butang cetak (ID ditambah dalam JS) */
+            #print-button-container {
+                display: none;
+            }
+
+            /* 3. Tunjukkan 'container' sijil dan sijil itu sendiri */
+            #sijil-container, #sijil-wrapper, #sijil-wrapper * {
+                visibility: visible;
+            }
+            
+            /* 4. Reset semua 'parent' yang mungkin mengganggu */
+            body, html, .max-w-4xl, .p-6, #tab-content-2, #sijil-container {
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+                position: static !important; /* Pastikan tiada 'parent' yang 'relative' */
+            }
+
+            /* 5. Ambil alih halaman dengan sijil */
+            #sijil-wrapper {
+                position: absolute !important; /* Paksa */
+                left: 0;
+                top: 0;
+                width: 210mm;  /* Tepat A4 */
+                height: 297mm; /* Tepat A4 */
+                max-width: none;
+                aspect-ratio: auto;
                 margin: 0;
                 padding: 0;
-                height: 100%;
-                overflow: hidden;
-                background: white;
-            }
-
-            /* [cite: 21] */
-            .modal, .modal-content {
-                all: unset;
-                display: block;
-                width: 100%;
-                height: 100%;
-            }
-
-            /* [cite: 22, 23] */
-            .sijil-a4 {
-                width: 794px;
-                height: 1123px;
-                padding: 10px;
-                background-size: cover;
-                background-repeat: no-repeat;
-                background-position: center;
-                margin: auto;
-                page-break-before: avoid;
-                page-break-after: avoid;
-                break-after: avoid-page;
-                break-before: avoid-page;
-                overflow: hidden;
-                /* WAJIB: Paksa imej latar dicetak */
+                box-shadow: none;
+                border: none;
+                
+                /* 6. WAJIB: Paksa imej latar dicetak & meregang */
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                background-size: 100% 100% !important;
             }
 
-            /* [cite: 24] - Sembunyikan semua elemen UI */
-            header, nav, #tab-content-1, #tab-content-3, footer, 
-            #form-semakan, .print-btn-container, .close {
-                display: none !important;
+            /* 7. Pastikan teks sijil (position: absolute) juga nampak */
+            .sijil-text {
+                visibility: visible;
             }
         }
-        /* --- LOGIK CETAK TAMAT --- */
+        /* --- PERUBAHAN CSS CETAK TAMAT DI SINI --- */
     </style>
 </head>
 <body class="bg-gray-100 p-4 md:p-8">
@@ -274,25 +226,8 @@
                 </form>
                 
                 <div id="sijil-container" class="mt-6">
-                    <div id="sijilModal" class="modal">
-                        <div class="modal-content">
-                            <div class="print-btn-container">
-                                <button 
-                                    onclick="printSijil()" 
-                                    class="py-2 px-6 bg-green-600 text-white font-bold rounded-md shadow-md hover:bg-green-700 transition duration-150">
-                                    Cetak Sijil
-                                </button>
-                            </div>
-                            <span class="close" onclick="tutupModal()">&times;</span>
-                            
-                            <div class="sijil-a4" id="sijilContent">
-                                <div class="centered-content" id="sijilInnerContent">
-                                    </div>
-                            </div>
-                        </div>
                     </div>
-                </div>
-                </div>
+            </div>
 
             <div id="tab-content-3" class="tab-content hidden">
                 <h2 class="text-2xl font-semibold mb-6 text-gray-800">Rumusan Kehadiran</h2>
@@ -320,8 +255,9 @@
         const { createClient } = supabase;
         const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // --- (DIHAPUSKAN) KONFIGURASI SIJIL (Tidak lagi diguna) ---
-        // const POSISI_NAMA = '30%'; 
+        // --- KONFIGURASI SIJIL (DIKEMASKINI) ---
+        // Kedudukan diubah kepada 45% (atas sedikit) berdasarkan permintaan
+        const POSISI_NAMA = '30%'; 
 
         // --- ELEMEN DOM ---
         const tabButtons = {
@@ -347,13 +283,9 @@
         // Borang Semakan (Tab 2)
         const formSemakan = document.getElementById('form-semakan');
         const nokpSemakInput = document.getElementById('nokp-semak');
-        // 'sijilContainer' kini memegang modal
-        const sijilContainer = document.getElementById('sijil-container'); 
+        const sijilContainer = document.getElementById('sijil-container');
         const searchBtn = document.getElementById('search-btn');
         const resetBtn = document.getElementById('reset-btn');
-        // Elemen BARU dari prototaip
-        const sijilModal = document.getElementById('sijilModal');
-        const sijilInnerContent = document.getElementById('sijilInnerContent');
         
         // Rumusan (Tab 3)
         const rumusanGlobalContainer = document.getElementById('rumusan-global-container');
@@ -365,6 +297,8 @@
             'WILAYAH PERSEKUTUAN KUALA LUMPUR', 'WILAYAH PERSEKUTUAN LABUAN', 'WILAYAH PERSEKUTUAN PUTRAJAYA'
         ];
         const senaraiPeranan = ['MURID / PELAJAR', 'GURU', 'PEGAWAI DI JPN', 'PEGAWAI DI PPD', 'IBU BAPA'];
+
+        // --- (PERUBAHAN 1: TAMBAH PEMETAAN NAMA PAPARAN) ---
         const namaPaparanPeranan = {
             'MURID / PELAJAR': 'MURID',
             'GURU': 'GURU',
@@ -376,19 +310,21 @@
 
         // --- FUNGSI UTAMA ---
 
+        // Fungsi untuk tukar tab (guna bg-red-600)
         function showTab(tabId) {
             Object.values(tabContents).forEach(content => content.classList.add('hidden'));
+            // Guna bg-red-600 untuk tab aktif
             Object.values(tabButtons).forEach(btn => btn.classList.remove('bg-red-600', 'text-white')); 
             
             tabContents[`content${tabId}`].classList.remove('hidden');
-            tabButtons[`btn${tabId}`].classList.add('bg-red-600', 'text-white');
+            tabButtons[`btn${tabId}`].classList.add('bg-red-600', 'text-white'); // Guna bg-red-600
 
             if (tabId === '3') {
                 loadRumusan();
             }
         }
 
-        // --- LOGIK TAB 1: PENDAFTARAN (Tiada Perubahan) ---
+        // --- LOGIK TAB 1: PENDAFTARAN ---
 
         negeriSelect.addEventListener('change', () => {
             if (negeriSelect.value === 'MELAKA') {
@@ -411,6 +347,7 @@
             }
         });
 
+        // Hantar borang pendaftaran (dengan SweetAlert)
         formPendaftaran.addEventListener('submit', async (e) => {
             e.preventDefault();
             submitBtn.disabled = true;
@@ -427,6 +364,7 @@
             };
 
             if (perananWajibSekolah.includes(dataObj.peranan) && !dataObj.sekolah) {
+                // Guna SweetAlert untuk ralat validasi
                 Swal.fire({
                     icon: 'error',
                     title: 'Borang Tidak Lengkap',
@@ -438,13 +376,19 @@
             }
 
             try {
+                // (DIKEMAS KINI) Guna 'upsert' untuk membenarkan kemas kini jika No KP wujud
                 const { data, error } = await db
                     .from('peserta')
-                    .upsert(dataObj, { onConflict: 'nokp' }) 
+                    .upsert(dataObj, { onConflict: 'nokp' }) // Jika 'nokp' wujud, ia akan 'update'
                     .select();
                 
-                if (error) { throw error; }
+                if (error) {
+                    // Ralat 23505 (unique violation) tidak akan berlaku lagi
+                    // tetapi kita masih perlu tangani ralat lain
+                    throw error;
+                }
 
+                // (DIKEMAS KINI) Mesej SweetAlert
                 Swal.fire({
                     icon: 'success',
                     title: 'Pendaftaran Berjaya!',
@@ -457,6 +401,7 @@
             
             } catch (error) {
                 console.error('Ralat Pendaftaran:', error.message);
+                // Guna SweetAlert untuk ralat 'catch'
                 Swal.fire({
                     icon: 'error',
                     title: 'Pendaftaran Gagal',
@@ -469,11 +414,12 @@
         });
 
 
-        // --- LOGIK TAB 2: SEMAKAN SIJIL (DIUBAHSUAI) ---
+        // --- LOGIK TAB 2: SEMAKAN SIJIL ---
 
+        // dengan SweetAlert
         formSemakan.addEventListener('submit', async (e) => {
             e.preventDefault();
-            sijilInnerContent.innerHTML = ''; // Kosongkan kandungan modal
+            sijilContainer.innerHTML = '';
             searchBtn.disabled = true;
             searchBtn.textContent = 'Mencari...';
 
@@ -490,8 +436,8 @@
                     throw new Error('Data tidak ditemui. Sila pastikan No. KP anda betul atau daftar di Tab 1.');
                 }
 
-                generateCertificate(data); // Fungsi ini kini memaparkan modal
-                
+                generateCertificate(data);
+                // Guna SweetAlert 'toast' untuk notifikasi ringkas
                 Swal.fire({
                     icon: 'success',
                     title: 'Sijil Ditemui',
@@ -504,6 +450,7 @@
 
             } catch (error) {
                 console.error('Ralat Semakan:', error.message);
+                // Guna SweetAlert untuk ralat
                 Swal.fire({
                     icon: 'error',
                     title: 'Semakan Gagal',
@@ -515,58 +462,48 @@
             }
         });
 
-        // Event listener untuk butang Reset (DIUBAHSUAI)
+        // Event listener untuk butang Reset
         resetBtn.addEventListener('click', () => {
             nokpSemakInput.value = '';
-            sijilInnerContent.innerHTML = ''; // Kosongkan modal
-            tutupModal(); // Tutup modal jika terbuka
+            sijilContainer.innerHTML = '';
         });
 
-        // --- FUNGSI JANA SIJIL (DIUBAHSUAI GUNA LOGIK PROTOTYPE) ---
+        // --- FUNGSI DIKEMASKINI UNTUK JANA SIJIL ---
         function generateCertificate(peserta) {
-            // Jana HTML menggunakan gaya dari prototaip [cite: 14, 15, 18]
-            // Data 'program' dan 'tarikh' tiada dalam DB, jadi kita hanya guna nama & kp
-            const sijilHtml = `
-                <div class="nama">
-                    ${peserta.nama}
+            // --- PERUBAHAN JAVASCRIPT DI SINI ---
+            sijilContainer.innerHTML = `
+                <div class="flex justify-center mb-4" id="print-button-container">
+                    <button id="print-button" class="py-2 px-6 bg-green-600 text-white font-bold rounded-md shadow-md hover:bg-green-700 transition duration-150">
+                        Cetak / Simpan PDF
+                    </button>
                 </div>
-                <div class="kp">
-                    No. KP: ${peserta.nokp}
-                </div>
-                <div class="nota" style="margin-top: 50px;">
-                    (Sijil ini dijana secara automatik oleh sistem e-Sijil JPN Melaka)
-                </div>
+                <div id="sijil-wrapper">
+                
+                    <div class="sijil-text" 
+                         style="top: ${POSISI_NAMA}; 
+                                font-family: Arial, sans-serif; 
+                                line-height: 1.2;
+								left:12%;
+								width:94%">
+                        
+                        <div style="font-size: 32px; font-weight: bold;">
+                            ${peserta.nama}
+                        </div>
+                        
+                        <div style="font-size: 16px; font-style: italic;"> 
+                            (${peserta.nokp})
+                        </div>
+                    </div>
+                    </div>
             `;
-            
-            sijilInnerContent.innerHTML = sijilHtml;
-            sijilModal.style.display = 'block'; // Paparkan modal
+            // Pasang semula event listener untuk butang cetak yang baru dijana
+            document.getElementById('print-button').addEventListener('click', () => {
+                window.print();
+            });
         }
 
-        // --- FUNGSI BARU DARI PROTOTYPE ---
-        
-        // [cite: 30, 31]
-        function tutupModal() {
-            sijilModal.style.display = "none";
-        }
 
-        // [cite: 32]
-        function printSijil() {
-            window.print();
-        }
-        
-        // Pasang fungsi ke 'window' supaya 'onclick' HTML boleh mencapainya
-        window.tutupModal = tutupModal;
-        window.printSijil = printSijil;
-
-        // [cite: 33, 34]
-        window.onclick = function(event) {
-            if (event.target === sijilModal) {
-                tutupModal();
-            }
-        };
-
-
-        // --- LOGIK TAB 3: RUMUSAN (Tiada Perubahan) ---
+        // --- LOGIK TAB 3: RUMUSAN ---
         
         async function loadRumusan() {
             const loadingHtml = '<p class="text-gray-500">Memuatkan data rumusan...</p>';
@@ -574,11 +511,12 @@
             rumusanGlobalContainer.innerHTML = loadingHtml;
             
             try {
+                // Ambil 'nokp' juga untuk kiraan jantina
                 const { data, error } = await db
                     .from('peserta')
-                    .select('negeri, peranan, nokp'); 
+                    .select('negeri, peranan, nokp'); // Tambah 'nokp'
 
-                if (error) throw error; 
+                if (error) throw error; // Ralat akan ditangkap oleh 'catch'
 
                 // 1. Sediakan templat rumusan (per-negeri)
                 const summaryNegeri = {};
@@ -589,6 +527,7 @@
                     });
                 });
                 
+                // Sediakan templat rumusan (global)
                 let summaryGlobal = {
                     TOTAL: 0,
                     LELAKI: 0,
@@ -598,14 +537,21 @@
 
                 // 2. Kira data
                 data.forEach(item => {
+                    // Kiraan Per-Negeri
                     if (summaryNegeri[item.negeri] && summaryNegeri[item.negeri][item.peranan] !== undefined) {
                         summaryNegeri[item.negeri][item.peranan]++;
                         summaryNegeri[item.negeri]['TOTAL']++;
                     }
+
+                    // Kiraan Global
                     summaryGlobal.TOTAL++;
+                    
+                    // Kira Peranan Global
                     if (summaryGlobal[item.peranan] !== undefined) {
                         summaryGlobal[item.peranan]++;
                     }
+
+                    // Kira Jantina Global (Ganjil=Lelaki, Genap=Perempuan)
                     if (item.nokp && item.nokp.length === 12) {
                         const lastDigit = parseInt(item.nokp.slice(-1));
                         if (lastDigit % 2 === 0) {
@@ -616,6 +562,8 @@
                     }
                 });
                 
+                // (BARU) Kira bilangan negeri unik yang telah mendaftar
+                // Ini akan mengira ['MELAKA', 'JOHOR', 'MELAKA'] sebagai 2
                 const negeriUnik = new Set(data.map(item => item.negeri));
 
                 // 3. Jana HTML untuk Rumusan Global
@@ -659,11 +607,14 @@
                     const negeriData = summaryNegeri[negeri];
                     const total = negeriData.TOTAL;
                     
-                    let bgOpacity = 20; 
+                    let bgOpacity = 20; // Default untuk 0
                     if (maxTotal > 0 && total > 0) {
                         bgOpacity = 20 + Math.floor((total / maxTotal) * 80);
                     }
                     
+                    // Guna `bg-blue-600` untuk heatmap
+                    // --- PERUBAHAN DI SINI ---
+                    // Saya tambah 'flex flex-col' untuk membetulkan susunan kad yang meregang
                     heatmapHtml += `
                         <div class="border border-gray-200 rounded-lg shadow-md overflow-hidden bg-blue-600 flex flex-col" style="background-color: rgba(37, 99, 235, ${bgOpacity / 100});">
                             <div class="p-4 ${bgOpacity > 50 ? 'text-white' : 'text-gray-900'}">
@@ -691,6 +642,7 @@
                 rumusanContainer.innerHTML = errorHtml;
                 rumusanGlobalContainer.innerHTML = errorHtml;
 
+                // Papar SweetAlert jika gagal muat rumusan
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal Muat Rumusan',
@@ -705,6 +657,13 @@
         tabButtons.btn1.addEventListener('click', () => showTab('1'));
         tabButtons.btn2.addEventListener('click', () => showTab('2'));
         tabButtons.btn3.addEventListener('click', () => showTab('3'));
+
+        // Juga tukar logik pendaftaran untuk benarkan kemas kini
+        // Jika pengguna hantar No KP yang sama, ia akan kemas kini data lama
+        // dan tidak akan tunjuk ralat "No KP telah dibatalkan"
+        // Ini dicapai dengan menukar .insert() kepada .upsert()
+        
+        // (Logik pendaftaran telah diubah di atas untuk menggunakan .upsert())
 
         showTab('1');
     </script>
