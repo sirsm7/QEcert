@@ -547,7 +547,7 @@
         }
 
 
-        // --- LOGIK TAB 4: RUMUSAN ---
+        // --- LOGIK TAB 4: RUMUSAN (TELAH DITAMBAH BAIK) ---
         
         async function loadRumusan() {
             const loadingHtml = '<p class="text-gray-500">Memuatkan data rumusan...</p>';
@@ -555,12 +555,32 @@
             rumusanGlobalContainer.innerHTML = loadingHtml;
             
             try {
-                // Ambil 'nokp' juga untuk kiraan jantina
-                const { data, error } = await db
-                    .from('peserta')
-                    .select('negeri, peranan, nokp'); // Tambah 'nokp'
+                // --- MULA PENAMBAHBAIKAN ---
+                // Ambil semua data menggunakan paginasi
+                let allData = [];
+                const CHUNK_SIZE = 1000; // Saiz had lalai Supabase
+                let page = 0;
+                let hasMore = true;
 
-                if (error) throw error; // Ralat akan ditangkap oleh 'catch'
+                while (hasMore) {
+                    const { data, error } = await db
+                        .from('peserta')
+                        .select('negeri, peranan, nokp')
+                        .range(page * CHUNK_SIZE, (page + 1) * CHUNK_SIZE - 1); // Cth: 0-999, 1000-1999
+
+                    if (error) throw error; // Ralat akan ditangkap oleh 'catch'
+
+                    if (data) {
+                        allData.push(...data); // Tambah data 'chunk' ini ke senarai 'allData'
+                    }
+
+                    if (!data || data.length < CHUNK_SIZE) {
+                        hasMore = false; // Ini adalah 'page' terakhir
+                    } else {
+                        page++; // Pindah ke 'page' seterusnya
+                    }
+                }
+                // --- TAMAT PENAMBAHBAIKAN ---
 
                 // 1. Sediakan templat rumusan (per-negeri)
                 const summaryNegeri = {};
@@ -580,7 +600,8 @@
                 };
 
                 // 2. Kira data
-                data.forEach(item => {
+                // (DIUBAH) Guna 'allData' dan bukan 'data'
+                allData.forEach(item => {
                     // Kiraan Per-Negeri
                     if (summaryNegeri[item.negeri] && summaryNegeri[item.negeri][item.peranan] !== undefined) {
                         summaryNegeri[item.negeri][item.peranan]++;
@@ -608,7 +629,8 @@
                 
                 // (BARU) Kira bilangan negeri unik yang telah mendaftar
                 // Ini akan mengira ['MELAKA', 'JOHOR', 'MELAKA'] sebagai 2
-                const negeriUnik = new Set(data.map(item => item.negeri));
+                // (DIUBAH) Guna 'allData' dan bukan 'data'
+                const negeriUnik = new Set(allData.map(item => item.negeri));
 
                 // 3. Jana HTML untuk Rumusan Global
                 let globalHtml = `
