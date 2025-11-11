@@ -136,14 +136,14 @@
                 Semak Sijil
             </button>
             
-            <button id="tab-btn-4" class="tab-button flex-1 py-4 px-6 text-center font-medium text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out hidden md:flex">
+            <button id="tab-btn-4" class="tab-button flex-1 py-4 px-6 text-center font-medium text-gray-700 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
                 Rumusan
             </button>
         </nav>
 
         <div class="p-6 md:p-8">
             
-            <div id="tab-content-1" class="tab-content space-y-6 hidden">
+            <div id="tab-content-1" class="tab-content space-y-6">
                 <h2 class="text-2xl font-semibold mb-4 text-gray-800">Selamat Datang!</h2>
                 
                 <div>
@@ -720,12 +720,12 @@
 
         // --- PENYEDIAAN AWAL (DIKEMASKINI) ---
         
+        // [NOTA] Listener ini masih wujud, ia tidak akan rosak walaupun butang disorok
         tabButtons.btn1.addEventListener('click', () => showTab('1'));
         tabButtons.btn2.addEventListener('click', () => showTab('2'));
         tabButtons.btn3.addEventListener('click', () => showTab('3'));
         
-        // Event listener untuk Butang 4 masih wujud, ia tidak akan error walaupun butang itu 'hidden'
-        // Ia hanya bermakna fungsi 'showTab('4')' tidak akan dipanggil oleh pengguna di mobile
+        // Event listener untuk Butang 4 masih wujud
         tabButtons.btn4.addEventListener('click', () => showTab('4'));
 
 
@@ -736,7 +736,7 @@
         
         // (Logik pendaftaran telah diubah di atas untuk menggunakan .upsert())
 
-        // [PERUBAHAN 3] Tunjuk Tab 3 (Semak Sijil) secara lalai
+        // [DIUBAH] Tunjuk Tab 3 (Semak Sijil) secara lalai
         showTab('3');
     </script>
 </body>
