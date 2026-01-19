@@ -1,9 +1,16 @@
-// --- 1. KONFIGURASI SUPABASE ---
-const SUPABASE_URL = 'https://qixtrxechyvxjdxthfrb.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpeHRyeGVjaHl2eGpkeHRoZnJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njg1NDcsImV4cCI6MjA3NzM0NDU0N30.emTaRn3JyI5hivpKxUL9kqmiV1TAJmH3oAohgBT-2eI';
+// --- 1. KONFIGURASI SUPABASE (DIKEMASKINI) ---
+const SUPABASE_URL = 'https://appppdag.cloud';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzYzMzczNjQ1LCJleHAiOjIwNzg3MzM2NDV9.vZOedqJzUn01PjwfaQp7VvRzSm4aRMr21QblPDK8AoY';
 
 const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Kita menetapkan schema lalai kepada 'techlympics' di sini.
+// Ini memastikan semua panggilan .from('peserta') akan mencari dalam 'techlympics.peserta'
+const db = createClient(SUPABASE_URL, SUPABASE_KEY, {
+    db: {
+        schema: 'techlympics' 
+    }
+});
 
 // --- 2. KONFIGURASI SIJIL ---
 const POSISI_NAMA = '30%'; 
@@ -123,6 +130,7 @@ formPendaftaran.addEventListener('submit', async (e) => {
     }
 
     try {
+        // Kerana kita set schema 'techlympics' pada 'db', ini akan akses 'techlympics.peserta'
         const { data, error } = await db
             .from('peserta')
             .upsert(dataObj, { onConflict: 'nokp' })
