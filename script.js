@@ -1,16 +1,18 @@
-// --- 1. KONFIGURASI SUPABASE (DIKEMASKINI) ---
+// --- 1. KONFIGURASI SUPABASE (SELF-HOSTED / PUBLIC TABLE) ---
 const SUPABASE_URL = 'https://appppdag.cloud';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzYzMzczNjQ1LCJleHAiOjIwNzg3MzM2NDV9.vZOedqJzUn01PjwfaQp7VvRzSm4aRMr21QblPDK8AoY';
 
 const { createClient } = supabase;
 
-// Kita menetapkan schema lalai kepada 'techlympics' di sini.
-// Ini memastikan semua panggilan .from('peserta') akan mencari dalam 'techlympics.peserta'
+// Konfigurasi Client Standard (Automatik guna schema 'public')
 const db = createClient(SUPABASE_URL, SUPABASE_KEY, {
-    db: {
-        schema: 'techlympics' 
+    auth: {
+        persistSession: false // Elak isu session storage di sesetengah browser
     }
 });
+
+// [PENTING] Nama table baru anda di schema 'public'
+const TABLE_NAME = 'techlympics'; 
 
 // --- 2. KONFIGURASI SIJIL ---
 const POSISI_NAMA = '30%'; 
@@ -67,7 +69,6 @@ const namaPaparanPeranan = {
 
 // --- 4. FUNGSI UTAMA ---
 
-// Fungsi Tukar Tab
 function showTab(tabId) {
     Object.values(tabContents).forEach(content => content.classList.add('hidden'));
     Object.values(tabButtons).forEach(btn => btn.classList.remove('bg-red-600', 'text-white')); 
@@ -119,20 +120,16 @@ formPendaftaran.addEventListener('submit', async (e) => {
     };
 
     if (perananWajibSekolah.includes(dataObj.peranan) && !dataObj.sekolah) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Borang Tidak Lengkap',
-            text: 'Nama Sekolah / Jabatan wajib diisi untuk peranan anda.',
-        });
+        Swal.fire({ icon: 'error', title: 'Borang Tidak Lengkap', text: 'Nama Sekolah / Jabatan wajib diisi.' });
         submitBtn.disabled = false;
         submitBtn.textContent = 'Hantar Pendaftaran';
         return;
     }
 
     try {
-        // Kerana kita set schema 'techlympics' pada 'db', ini akan akses 'techlympics.peserta'
+        // [MODIFIED] Guna nama table 'techlympics' (const TABLE_NAME)
         const { data, error } = await db
-            .from('peserta')
+            .from(TABLE_NAME)
             .upsert(dataObj, { onConflict: 'nokp' })
             .select();
         
@@ -141,7 +138,7 @@ formPendaftaran.addEventListener('submit', async (e) => {
         Swal.fire({
             icon: 'success',
             title: 'Pendaftaran Berjaya!',
-            text: 'Maklumat anda telah disimpan/dikemas kini. Sila ke Tab "Semak Sijil".',
+            text: 'Data disimpan. Sila ke Tab "Semak Sijil".',
             timer: 2000,
             showConfirmButton: false
         });
@@ -149,12 +146,16 @@ formPendaftaran.addEventListener('submit', async (e) => {
         daerahContainer.classList.add('hidden');
     
     } catch (error) {
-        console.error('Ralat Pendaftaran:', error.message);
-        Swal.fire({
-            icon: 'error',
-            title: 'Pendaftaran Gagal',
-            text: error.message,
-        });
+        console.error('Ralat Pendaftaran:', error);
+        
+        let errorText = error.message;
+        if (error.code === '42P01') {
+            errorText = `Ralat: Table "${TABLE_NAME}" tidak dijumpai di schema public. Sila jalankan SQL Script yang diberi.`;
+        } else if (error.code === '42501') {
+            errorText = 'Ralat Izin (RLS Policy): Sila pastikan Policy "Enable All" diaktifkan.';
+        }
+
+        Swal.fire({ icon: 'error', title: 'Pendaftaran Gagal', text: errorText });
     } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Hantar Pendaftaran';
@@ -172,15 +173,15 @@ formSemakan.addEventListener('submit', async (e) => {
     const nokp = nokpSemakInput.value;
 
     try {
+        // [MODIFIED] Guna nama table 'techlympics' (const TABLE_NAME)
         const { data, error } = await db
-            .from('peserta')
+            .from(TABLE_NAME)
             .select('*')
             .eq('nokp', nokp)
             .single();
 
-        if (error || !data) {
-            throw new Error('Data tidak ditemui. Sila pastikan No. KP anda betul atau daftar di Tab 1.');
-        }
+        if (error) throw error;
+        if (!data) throw new Error('Tiada data dijumpai.');
 
         generateCertificate(data);
         Swal.fire({
@@ -194,12 +195,16 @@ formSemakan.addEventListener('submit', async (e) => {
         });
 
     } catch (error) {
-        console.error('Ralat Semakan:', error.message);
-        Swal.fire({
-            icon: 'error',
-            title: 'Semakan Gagal',
-            text: error.message,
-        });
+        console.error('Ralat Semakan:', error);
+        
+        let errorText = error.message;
+        if (error.code === 'PGRST116') {
+             errorText = 'Tiada rekod dijumpai untuk No. KP ini.';
+        } else if (error.code === '42P01') {
+             errorText = `Ralat: Table "${TABLE_NAME}" tidak dijumpai di schema public.`;
+        }
+
+        Swal.fire({ icon: 'error', title: 'Semakan Gagal', text: errorText });
     } finally {
         searchBtn.disabled = false;
         searchBtn.textContent = 'Cari';
@@ -252,22 +257,22 @@ async function loadRumusan() {
         let page = 0;
         let hasMore = true;
 
+        // Loop untuk pagination
         while (hasMore) {
+            // [MODIFIED] Guna nama table 'techlympics' (const TABLE_NAME)
             const { data, error } = await db
-                .from('peserta')
+                .from(TABLE_NAME)
                 .select('negeri, peranan, nokp')
                 .range(page * CHUNK_SIZE, (page + 1) * CHUNK_SIZE - 1);
 
             if (error) throw error;
 
-            if (data) {
+            if (data && data.length > 0) {
                 allData.push(...data);
-            }
-
-            if (!data || data.length < CHUNK_SIZE) {
-                hasMore = false;
+                if (data.length < CHUNK_SIZE) hasMore = false;
+                else page++;
             } else {
-                page++;
+                hasMore = false;
             }
         }
 
@@ -280,35 +285,31 @@ async function loadRumusan() {
         });
         
         let summaryGlobal = {
-            TOTAL: 0,
-            LELAKI: 0,
-            PEREMPUAN: 0,
+            TOTAL: 0, LELAKI: 0, PEREMPUAN: 0,
             ...Object.fromEntries(senaraiPeranan.map(p => [p, 0])) 
         };
 
         allData.forEach(item => {
-            if (summaryNegeri[item.negeri] && summaryNegeri[item.negeri][item.peranan] !== undefined) {
-                summaryNegeri[item.negeri][item.peranan]++;
-                summaryNegeri[item.negeri]['TOTAL']++;
+            const negeri = item.negeri || 'LAIN-LAIN';
+            const peranan = item.peranan || 'LAIN-LAIN';
+
+            if (summaryNegeri[negeri]) {
+                if (summaryNegeri[negeri][peranan] !== undefined) summaryNegeri[negeri][peranan]++;
+                summaryNegeri[negeri]['TOTAL']++;
             }
 
             summaryGlobal.TOTAL++;
-            
-            if (summaryGlobal[item.peranan] !== undefined) {
-                summaryGlobal[item.peranan]++;
-            }
+            if (summaryGlobal[peranan] !== undefined) summaryGlobal[peranan]++;
 
             if (item.nokp && item.nokp.length === 12) {
                 const lastDigit = parseInt(item.nokp.slice(-1));
-                if (lastDigit % 2 === 0) {
-                    summaryGlobal.PEREMPUAN++;
-                } else {
-                    summaryGlobal.LELAKI++;
+                if (!isNaN(lastDigit)) {
+                    lastDigit % 2 === 0 ? summaryGlobal.PEREMPUAN++ : summaryGlobal.LELAKI++;
                 }
             }
         });
         
-        const negeriUnik = new Set(allData.map(item => item.negeri));
+        const negeriUnik = new Set(allData.map(item => item.negeri).filter(Boolean));
 
         // HTML Global
         let globalHtml = `
@@ -345,7 +346,7 @@ async function loadRumusan() {
 
         // HTML Heatmap Negeri
         let heatmapHtml = '';
-        const maxTotal = Math.max(...Object.values(summaryNegeri).map(n => n.TOTAL));
+        const maxTotal = Math.max(...Object.values(summaryNegeri).map(n => n.TOTAL), 1);
         
         senaraiNegeri.forEach(negeri => {
             const negeriData = summaryNegeri[negeri];
@@ -378,15 +379,18 @@ async function loadRumusan() {
         rumusanContainer.innerHTML = heatmapHtml;
 
     } catch (error) {
-        console.error('Ralat Memuatkan Rumusan:', error.message);
-        const errorHtml = `<p class="text-red-500 font-bold">Gagal memuatkan data: ${error.message}</p>`;
+        console.error('Ralat Memuatkan Rumusan:', error);
+        
+        let errorText = error.message;
+        if (error.code === '42P01') {
+             errorText = `Ralat Server: Table "${TABLE_NAME}" tidak dijumpai di schema public.`;
+        }
+
+        const errorHtml = `<div class="p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            <strong>Ralat:</strong> ${errorText}
+        </div>`;
         rumusanContainer.innerHTML = errorHtml;
         rumusanGlobalContainer.innerHTML = errorHtml;
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal Muat Rumusan',
-            text: error.message,
-        });
     }
 }
 
