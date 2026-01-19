@@ -1,0 +1,82 @@
+/* Guna fon Oswald sebagai default */
+body {
+    font-family: 'Oswald', sans-serif;
+}
+
+/* Paparan Sijil (Mesra Mudah Alih) */
+#sijil-wrapper {
+    width: 100%;
+    max-width: 210mm;
+    aspect-ratio: 210 / 297;
+    height: auto;
+    position: relative;
+    background-size: 100% 100%;    /* Kekal stretch */
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 20px auto;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    /* Pastikan fail imej ada dalam folder sama */
+    background-image: url('./sijil_techlym.png?v=1');
+}
+
+.sijil-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+    color: black;
+    padding: 0 10%;
+    box-sizing: border-box;
+}
+
+/* --- TETAPAN CETAK (PRINT SETTINGS) --- */
+@media print {
+    
+    /* 1. Sembunyikan SEMUA elemen secara lalai */
+    body * {
+        visibility: hidden;
+    }
+
+    /* 2. Sembunyikan container butang cetak */
+    #print-button-container {
+        display: none;
+    }
+
+    /* 3. Tunjukkan container sijil dan isinya */
+    #sijil-container, #sijil-wrapper, #sijil-wrapper * {
+        visibility: visible;
+    }
+    
+    /* 4. Reset margin/padding parent */
+    body, html, .max-w-4xl, .p-6, #tab-content-3, #sijil-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        position: static !important;
+    }
+
+    /* 5. Paksa Sijil memenuhi kertas A4 */
+    #sijil-wrapper {
+        position: absolute !important;
+        left: 0;
+        top: 0;
+        width: 210mm;
+        height: 297mm;
+        max-width: none;
+        aspect-ratio: auto;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border: none;
+        background-size: 100% 100% !important;
+
+        /* Paksa browser cetak background image */
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .sijil-text {
+        visibility: visible;
+    }
+}
