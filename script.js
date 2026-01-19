@@ -1,17 +1,19 @@
-// --- 1. KONFIGURASI SUPABASE (SELF-HOSTED / PUBLIC TABLE) ---
+// --- 1. KONFIGURASI SUPABASE (SELF-HOSTED / HOSTINGER) ---
 const SUPABASE_URL = 'https://appppdag.cloud';
+// Anon Key anda (Public)
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzYzMzczNjQ1LCJleHAiOjIwNzg3MzM2NDV9.vZOedqJzUn01PjwfaQp7VvRzSm4aRMr21QblPDK8AoY';
 
 const { createClient } = supabase;
 
-// Konfigurasi Client Standard (Automatik guna schema 'public')
+// Client init standard (automatik guna schema 'public')
 const db = createClient(SUPABASE_URL, SUPABASE_KEY, {
     auth: {
-        persistSession: false // Elak isu session storage di sesetengah browser
+        persistSession: false // Pilihan: Elak isu simpanan session di browser
     }
 });
 
-// [PENTING] Nama table baru anda di schema 'public'
+// [PENTING] UBAH NAMA PROGRAM DI SINI
+// Pastikan nama ini SAMA dengan nama table yang anda buat di Dashboard Supabase (Schema Public)
 const TABLE_NAME = 'techlympics'; 
 
 // --- 2. KONFIGURASI SIJIL ---
@@ -127,7 +129,7 @@ formPendaftaran.addEventListener('submit', async (e) => {
     }
 
     try {
-        // [MODIFIED] Guna nama table 'techlympics' (const TABLE_NAME)
+        // Menggunakan TABLE_NAME yang ditetapkan di atas
         const { data, error } = await db
             .from(TABLE_NAME)
             .upsert(dataObj, { onConflict: 'nokp' })
@@ -149,10 +151,11 @@ formPendaftaran.addEventListener('submit', async (e) => {
         console.error('Ralat Pendaftaran:', error);
         
         let errorText = error.message;
+        // Ralat biasa jika table tak wujud atau permission salah
         if (error.code === '42P01') {
-            errorText = `Ralat: Table "${TABLE_NAME}" tidak dijumpai di schema public. Sila jalankan SQL Script yang diberi.`;
+            errorText = `Ralat: Table "${TABLE_NAME}" tidak dijumpai di schema public. Pastikan anda sudah buat table ini.`;
         } else if (error.code === '42501') {
-            errorText = 'Ralat Izin (RLS Policy): Sila pastikan Policy "Enable All" diaktifkan.';
+            errorText = 'Ralat Izin (RLS Policy): Sila aktifkan Policy di Supabase Dashboard.';
         }
 
         Swal.fire({ icon: 'error', title: 'Pendaftaran Gagal', text: errorText });
@@ -173,7 +176,6 @@ formSemakan.addEventListener('submit', async (e) => {
     const nokp = nokpSemakInput.value;
 
     try {
-        // [MODIFIED] Guna nama table 'techlympics' (const TABLE_NAME)
         const { data, error } = await db
             .from(TABLE_NAME)
             .select('*')
@@ -259,7 +261,6 @@ async function loadRumusan() {
 
         // Loop untuk pagination
         while (hasMore) {
-            // [MODIFIED] Guna nama table 'techlympics' (const TABLE_NAME)
             const { data, error } = await db
                 .from(TABLE_NAME)
                 .select('negeri, peranan, nokp')
